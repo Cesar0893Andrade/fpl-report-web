@@ -1,13 +1,8 @@
 "use client";
 import { useState } from "react";
 import { League, PerfRow } from "@/lib/types";
-import { COLORS } from "@/lib/colors";
-
-function Badge({ emblem, short, i }: { emblem: string | null; short: string; i: number }) {
-  return emblem
-    ? <img className="badge sm" src={`/${emblem}`} alt="" loading="lazy" />
-    : <div className="badge sm" style={{ background: `linear-gradient(160deg,${COLORS[i % COLORS.length]},${COLORS[(i + 3) % COLORS.length]})` }}>{short}</div>;
-}
+import Badge from "@/components/Badge";
+import PositionDist from "@/components/PositionDist";
 
 // color por resultado H2H de la jornada
 function resColor(res: string) {
@@ -104,6 +99,8 @@ export default function Performance({ d }: { d: League }) {
           })}
         </div>
       </section>
+
+      <PositionDist rows={rows} />
     </>
   );
 }
