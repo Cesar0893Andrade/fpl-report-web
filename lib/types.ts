@@ -7,6 +7,7 @@ export interface SeriesItem { name: string; short: string; rank: number[] }
 export interface PerfRow {
   id: number; name: string; short: string; manager: string; emblem: string | null;
   points: number[]; total: number; last5: number; last10: number;
+  ranks: number[]; avg_rank: number; firsts: number;
 }
 export interface League {
   season: string;
