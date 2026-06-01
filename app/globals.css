@@ -86,6 +86,35 @@ td.pts{font-family:var(--h);font-weight:800;font-size:16px}
 footer{padding:34px 0 50px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin-top:24px}
 .pill{display:inline-block;font-size:11px;color:var(--mint);border:1px solid rgba(102,255,182,.3);border-radius:99px;padding:3px 9px;margin-left:8px}
 
+/* ---- Tabs ---- */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 22px;position:sticky;top:64px;z-index:20;padding:10px 0;background:linear-gradient(180deg,rgba(42,0,48,.7),transparent)}
+.tabs button{font-family:var(--h);font-weight:700;font-size:13.5px;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:9px 16px;border-radius:12px;cursor:pointer;transition:.2s}
+.tabs button:hover{color:var(--ink)}
+.tabs button.on{color:var(--purple);background:linear-gradient(90deg,var(--mint),var(--cyan));border-color:transparent}
+
+/* ---- Matriz (Performance por GW) ---- */
+.badge.sm{width:26px;height:26px;border-radius:7px;font-size:10px;box-shadow:none}
+.matrix{overflow-x:auto}
+table.mx{border-collapse:separate;border-spacing:0;min-width:920px;width:100%}
+table.mx thead th{font-family:var(--h);font-weight:700;font-size:10.5px;color:var(--muted);padding:8px 3px;text-align:center}
+table.mx .sticky{position:sticky;left:0;background:var(--purple-2);z-index:2;min-width:170px;text-align:left;padding-left:10px}
+table.mx thead th.sticky{z-index:3}
+table.mx th.tot{color:#fff}
+table.mx td{padding:1px;text-align:center}
+table.mx td.sticky .team .nm{font-size:13px}
+.cell{display:block;padding:7px 3px;min-width:26px;font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;color:#15001a;border-radius:5px}
+table.mx td.total .cell{background:rgba(255,255,255,.10);color:#fff;font-family:var(--h);font-weight:800}
+
+/* ---- Form ---- */
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.formcard{padding:14px 18px}
+.formhead{font-family:var(--h);font-weight:800;font-size:15px;margin-bottom:6px;color:var(--mint)}
+.formrow{display:flex;align-items:center;gap:11px;padding:8px 0;border-top:1px solid var(--line)}
+.formrow .fr{width:20px;color:var(--muted);font-weight:700;font-size:13px;text-align:center}
+.formrow .fn{flex:1;font-family:var(--h);font-weight:600;font-size:13.5px}
+.formrow .fp{font-family:var(--h);font-weight:800}
+@media(max-width:640px){.formgrid{grid-template-columns:1fr}}
+
 /* ---- Motion ---- */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .reveal{animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) both}
