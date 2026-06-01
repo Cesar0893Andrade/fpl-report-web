@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { League, PerfRow } from "@/lib/types";
-import { COLORS, rygColor } from "@/lib/colors";
+import { COLORS } from "@/lib/colors";
 
 function Badge({ emblem, short, i }: { emblem: string | null; short: string; i: number }) {
   return emblem
@@ -9,24 +9,26 @@ function Badge({ emblem, short, i }: { emblem: string | null; short: string; i: 
     : <div className="badge sm" style={{ background: `linear-gradient(160deg,${COLORS[i % COLORS.length]},${COLORS[(i + 3) % COLORS.length]})` }}>{short}</div>;
 }
 
+// color por resultado H2H de la jornada
+function resColor(res: string) {
+  return res === "W" ? "#63BE7B" : res === "D" ? "#FFEB84" : res === "L" ? "#F8696B" : "rgba(255,255,255,.08)";
+}
+
 type Mode = "rank" | "pts";
 
 export default function Performance({ d }: { d: League }) {
   const [mode, setMode] = useState<Mode>("rank");
   const { events, rows } = d.performance;
-  const N = rows.length;
-  const allPts = rows.flatMap((r) => r.points);
-  const pmin = Math.min(...allPts), pmax = Math.max(...allPts);
 
   const sorted: PerfRow[] = mode === "rank"
     ? [...rows].sort((a, b) => a.avg_rank - b.avg_rank)
     : [...rows].sort((a, b) => b.total - a.total);
   const cellVal = (r: PerfRow, j: number) => (mode === "rank" ? r.ranks[j] : r.points[j]);
-  const cellColor = (r: PerfRow, j: number) =>
-    mode === "rank" ? rygColor(N - r.ranks[j], 0, N - 1) : rygColor(r.points[j], pmin, pmax);
 
-  const last5 = [...rows].sort((a, b) => b.last5 - a.last5);
-  const last10 = [...rows].sort((a, b) => b.last10 - a.last10);
+  const windows = [
+    { t: "Últimas 5", pts: (r: PerfRow) => r.last5, rank: (r: PerfRow) => r.last5_rank },
+    { t: "Últimas 10", pts: (r: PerfRow) => r.last10, rank: (r: PerfRow) => r.last10_rank },
+  ];
 
   return (
     <>
@@ -36,14 +38,20 @@ export default function Performance({ d }: { d: League }) {
             <h2 className="h2">Performance por <span className="g">GW</span></h2>
             <p className="kicker">
               {mode === "rank"
-                ? "Posición dentro de cada jornada (1 = mejor de la fecha) · empates comparten · más objetivo que el puntaje bruto (neutraliza dobles jornadas)"
-                : "Puntos de cada equipo por jornada · color por rendimiento · ordenado por total"}
+                ? "Posición dentro de cada jornada (1 = mejor de la fecha) · empates comparten · neutraliza dobles jornadas"
+                : "Puntos de cada equipo por jornada · ordenado por total"}
             </p>
           </div>
           <div className="seg">
             <button className={mode === "rank" ? "on" : ""} onClick={() => setMode("rank")}>Rank GW</button>
             <button className={mode === "pts" ? "on" : ""} onClick={() => setMode("pts")}>Puntos</button>
           </div>
+        </div>
+        <div className="legendchips">
+          <span>Color = resultado H2H:</span>
+          <em className="ck" style={{ background: "#63BE7B" }}>Ganó</em>
+          <em className="ck" style={{ background: "#FFEB84" }}>Empató</em>
+          <em className="ck" style={{ background: "#F8696B" }}>Perdió</em>
         </div>
         <div className="panel reveal"><div className="matrix"><table className="mx">
           <thead><tr>
@@ -56,35 +64,44 @@ export default function Performance({ d }: { d: League }) {
               <tr key={r.id}>
                 <td className="sticky"><div className="team"><Badge emblem={r.emblem} short={r.short} i={i} /><div className="nm">{r.name}</div></div></td>
                 {events.map((_, j) => (
-                  <td key={j}><span className="cell" style={{ background: cellColor(r, j) }}>{cellVal(r, j)}</span></td>
+                  <td key={j}><span className="cell" style={{ background: resColor(r.results[j]) }}>{cellVal(r, j)}</span></td>
                 ))}
                 <td className="total"><span className="cell">{mode === "rank" ? r.avg_rank.toFixed(1) : r.total}</span></td>
               </tr>
             ))}
           </tbody>
         </table></div></div>
-        {mode === "rank" && (
-          <p className="legendnote">«Prom» = posición promedio por jornada (menor = mejor). Quien es 1.º en más fechas es el más consistente, sin importar si fueron jornadas dobles.</p>
-        )}
+        <p className="legendnote">El número es {mode === "rank" ? "la posición de esa jornada (menor = mejor); «Prom» = posición promedio" : "el puntaje de esa jornada"}. El color refleja si esa semana ganaste, empataste o perdiste tu enfrentamiento.</p>
       </section>
 
       <section className="block">
         <h2 className="h2"><span className="g">Form</span> · ¿quién está caliente?</h2>
-        <p className="kicker">Suma de puntos en las últimas jornadas</p>
+        <p className="kicker">{mode === "rank" ? "Por posición promedio en las últimas jornadas (menor = mejor)" : "Por puntos sumados en las últimas jornadas"}</p>
         <div className="formgrid">
-          {([{ t: "Últimas 5", arr: last5, k: "last5" as const }, { t: "Últimas 10", arr: last10, k: "last10" as const }]).map((card) => (
-            <div className="panel formcard reveal" key={card.k}>
-              <div className="formhead">{card.t}</div>
-              {card.arr.map((r, i) => (
-                <div className="formrow" key={r.id}>
-                  <span className="fr">{i + 1}</span>
-                  <Badge emblem={r.emblem} short={r.short} i={i} />
-                  <span className="fn">{r.name}</span>
-                  <span className="fp">{card.k === "last5" ? r.last5 : r.last10}</span>
-                </div>
-              ))}
-            </div>
-          ))}
+          {windows.map((w) => {
+            const arr = mode === "rank"
+              ? [...rows].sort((a, b) => w.rank(a) - w.rank(b))
+              : [...rows].sort((a, b) => w.pts(b) - w.pts(a));
+            return (
+              <div className="panel formcard reveal" key={w.t}>
+                <div className="formhead">{w.t}</div>
+                {arr.map((r, i) => {
+                  const prim = mode === "rank" ? w.rank(r).toFixed(1) : String(w.pts(r));
+                  const primU = mode === "rank" ? "pos" : "pts";
+                  const sec = mode === "rank" ? `${w.pts(r)} pts` : `${w.rank(r).toFixed(1)} pos`;
+                  return (
+                    <div className="formrow" key={r.id}>
+                      <span className="fr">{i + 1}</span>
+                      <Badge emblem={r.emblem} short={r.short} i={i} />
+                      <span className="fn">{r.name}</span>
+                      <span className="fp">{prim}<small> {primU}</small></span>
+                      <span className="fsec">{sec}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
       </section>
     </>

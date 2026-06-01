@@ -52,7 +52,7 @@ export default function Resumen({ d }: { d: League }) {
         <p className="kicker">Clasificación final · cabeza a cabeza (3 / 1 / 0)</p>
         <div className="panel reveal"><div className="tablewrap"><table>
           <thead><tr>
-            <th>#</th><th className="l">Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>PF</th><th>PC</th><th>Pts</th><th>Efic. XI</th>
+            <th>#</th><th className="l">Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>PF</th><th>PC</th><th>Pts</th><th>Pos/GW</th><th>Efic. XI</th>
           </tr></thead>
           <tbody>
             {d.standings.map((s, i) => {
@@ -69,6 +69,7 @@ export default function Resumen({ d }: { d: League }) {
                   <td>{s.played}</td><td className="win">{s.won}</td><td>{s.drawn}</td><td className="los">{s.lost}</td>
                   <td>{s.pf}</td><td style={{ color: "var(--muted)" }}>{s.pa}</td>
                   <td className="pts">{s.pts}</td>
+                  <td style={{ fontFamily: "var(--h)", fontWeight: 700, color: "var(--cyan)" }} title="Posición promedio por jornada (menor = mejor)">{s.avg_rank.toFixed(1)}</td>
                   <td><div className="effcell">
                     <div className="effbar"><span style={{ width: `${Math.round(s.eff * 100)}%`, background: ec }} /></div>
                     <span className="effval" style={{ color: ec }}>{(s.eff * 100).toFixed(1)}%</span>

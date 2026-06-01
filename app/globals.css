@@ -118,7 +118,11 @@ table.mx td.total .cell{background:rgba(255,255,255,.10);color:#fff;font-family:
 .formrow{display:flex;align-items:center;gap:11px;padding:8px 0;border-top:1px solid var(--line)}
 .formrow .fr{width:20px;color:var(--muted);font-weight:700;font-size:13px;text-align:center}
 .formrow .fn{flex:1;font-family:var(--h);font-weight:600;font-size:13.5px}
-.formrow .fp{font-family:var(--h);font-weight:800}
+.formrow .fp{font-family:var(--h);font-weight:800;min-width:54px;text-align:right}
+.formrow .fp small{color:var(--muted);font-weight:600;font-family:var(--b);font-size:10.5px}
+.formrow .fsec{color:var(--muted);font-size:11px;min-width:60px;text-align:right;font-variant-numeric:tabular-nums}
+.legendchips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:-4px 0 14px}
+.legendchips .ck{font-style:normal;font-weight:700;font-size:11px;color:#15001a;padding:3px 10px;border-radius:99px}
 @media(max-width:640px){.formgrid{grid-template-columns:1fr}}
 
 /* ---- Motion ---- */
