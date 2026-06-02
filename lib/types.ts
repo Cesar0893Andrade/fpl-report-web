@@ -13,6 +13,10 @@ export interface PerfRow {
 }
 export interface VersusRec { w: number; d: number; l: number }
 export interface Versus { ids: number[]; rec: Record<string, Record<string, VersusRec>> }
+export interface PlayerPts { el: number; name: string; pos: string; sq: number; xi: number }
+export interface PtsAgg { total: number; pos: Record<string, number>; type: Record<string, number> }
+export interface TeamPts { id: number; squad: PtsAgg; xi: PtsAgg; players: PlayerPts[] }
+export interface Points { tcols: string[]; teams: TeamPts[] }
 export interface RosterPlayer { el: number; name: string; pos: string }
 export interface Move { event: number; time: string; type: string; lentry: number; inEl: number; inName: string; inPos: string; outEl: number; outName: string; outPos: string }
 export interface Rosters { draft: Record<string, RosterPlayer[]>; moves: Move[] }
@@ -24,4 +28,5 @@ export interface League {
   performance: { events: number[]; rows: PerfRow[] };
   versus: Versus;
   rosters: Rosters;
+  points: Points;
 }

@@ -191,3 +191,32 @@ table.mx td.total .cell{background:rgba(255,255,255,.10);color:#fff;font-family:
   .stats{grid-template-columns:1fr 1fr}.stat.champ{grid-column:1/-1}
   .brand small{display:none}
 }
+
+/* ---- Puntos (análisis de puntos) ---- */
+.lensseg{display:inline-flex;margin:-6px 0 4px}
+.ptslist{padding:8px 16px}
+.ptsrow{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.ptsrow:first-child{border-top:0}
+.ptsrow .side{display:flex;align-items:center;gap:8px;flex:0 0 190px;min-width:0}
+.ptsrow .rivn{font-family:var(--h);font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptsbar{flex:1;display:flex;align-items:stretch;height:24px;background:rgba(255,255,255,.05);border-radius:7px;overflow:hidden}
+.ptsbar>span{display:flex;align-items:center;justify-content:flex-end;padding:0 7px;font-family:var(--h);font-weight:800;font-size:11.5px;color:#15001a;min-width:0;transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.ptsbar .seg-xi{background:linear-gradient(90deg,var(--green),var(--mint))}
+.ptsbar .seg-bench{background:rgba(255,255,255,.16);color:var(--muted)}
+.ptsbar.rollbar>span{justify-content:center;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.ptsuse{font-family:var(--h);font-weight:800;font-size:13px;min-width:46px;text-align:right;color:var(--mint)}
+@media(max-width:640px){.ptsrow .side{flex-basis:120px}.ptsrow .rivn{max-width:88px}}
+
+.plrtable{padding:2px 14px 10px}
+.plr{display:grid;grid-template-columns:54px 1fr 78px 70px 64px;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+.plrhead{font-family:var(--h);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-top:0;position:sticky;top:0;background:linear-gradient(180deg,rgba(42,0,48,.96),rgba(42,0,48,.86));z-index:1}
+.plr .pp{display:flex;justify-content:center}
+.posdot{font-style:normal;font-family:var(--h);font-weight:800;font-size:9.5px;color:#15001a;padding:3px 6px;border-radius:6px;letter-spacing:.02em}
+.plr .pnm{font-weight:600;font-size:13.5px;text-align:left;min-width:0}
+.plbar{display:block;position:relative;height:5px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:5px;overflow:hidden}
+.plbar i{position:absolute;left:0;top:0;height:100%;background:rgba(255,255,255,.20)}
+.plbar b{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--green),var(--mint))}
+.plr .pv{font-family:var(--h);font-weight:700;font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums}
+.plr .pv.strong{color:var(--ink);font-weight:800}
+.plrtable{max-height:620px;overflow-y:auto}
+@media(max-width:640px){.plr{grid-template-columns:42px 1fr 60px 56px 50px;gap:5px}.plr .pnm{font-size:12.5px}}
