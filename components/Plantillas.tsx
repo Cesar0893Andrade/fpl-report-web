@@ -17,7 +17,7 @@ export default function Plantillas({ d }: { d: League }) {
   const lastEv = d.league.last_event;
   const teams = d.standings.map((s) => ({ id: s.id, name: s.name, short: s.short, emblem: s.emblem }));
   const [team, setTeam] = useState(teams[0]?.id ?? 0);
-  const [gw, setGw] = useState(lastEv);
+  const [gw, setGw] = useState(0); // 0 = Draft (origen); 1..38 = al cierre de esa jornada
 
   const idx = (id: number) => teams.findIndex((t) => t.id === id);
   const teamMoves = useMemo(() => moves.filter((m) => m.lentry === team), [moves, team]);
@@ -55,8 +55,8 @@ export default function Plantillas({ d }: { d: League }) {
           ))}
         </div>
         <div className="gwslider">
-          <span>Plantilla al cierre del <b>GW {gw}</b></span>
-          <input type="range" min={1} max={lastEv} value={gw} onChange={(e) => setGw(+e.target.value)} />
+          <span>{gw === 0 ? <>Plantilla del <b style={{ color: SRC.draft.c }}>Draft</b> (origen)</> : <>Plantilla al cierre del <b>GW {gw}</b></>}</span>
+          <input type="range" min={0} max={lastEv} value={gw} onChange={(e) => setGw(+e.target.value)} />
           <span className="legendmini">{Object.entries(SRC).map(([k, v]) => <em key={k} style={{ background: v.c }}>{v.t}</em>)}</span>
         </div>
       </section>
@@ -81,7 +81,7 @@ export default function Plantillas({ d }: { d: League }) {
             <span key={k} style={{ width: `${(comp[k] / roster.length) * 100}%`, background: SRC[k].c }} title={`${comp[k]} ${SRC[k].t}`}>{comp[k]}</span>
           ) : null)}
         </div>
-        <p className="legendnote">Composición del XV: {Object.keys(SRC).map((k) => comp[k] ? `${comp[k]} ${SRC[k].t.toLowerCase()}` : null).filter(Boolean).join(" · ")} · {movesUpTo} movimientos hasta el GW {gw}.</p>
+        <p className="legendnote">Composición del XV: {Object.keys(SRC).map((k) => comp[k] ? `${comp[k]} ${SRC[k].t.toLowerCase()}` : null).filter(Boolean).join(" · ")} · {gw === 0 ? "plantilla original del draft, sin movimientos." : `${movesUpTo} movimiento${movesUpTo === 1 ? "" : "s"} desde el draft hasta el GW ${gw}.`}</p>
       </section>
 
       <div className="splitgrid">
