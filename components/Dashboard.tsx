@@ -7,8 +7,9 @@ import Performance from "@/components/Performance";
 import Versus from "@/components/Versus";
 import Plantillas from "@/components/Plantillas";
 import Puntos from "@/components/Puntos";
+import Copa from "@/components/Copa";
 
-type Tab = "resumen" | "rendimiento" | "versus" | "plantillas" | "puntos";
+type Tab = "resumen" | "rendimiento" | "versus" | "plantillas" | "puntos" | "copa";
 
 export default function Dashboard({ leagues, order }: { leagues: Record<number, League>; order: number[] }) {
   const [sel, setSel] = useState(order[0]);
@@ -23,7 +24,7 @@ export default function Dashboard({ leagues, order }: { leagues: Record<number, 
         <div className="brand"><Crest /><div>Fantasy Premier League<small>Reporte de Liga · 25/26</small></div></div>
         <div className="switch">
           {order.map((id) => (
-            <button key={id} className={id === sel ? "on" : ""} onClick={() => setSel(id)}>
+            <button key={id} className={id === sel ? "on" : ""} onClick={() => { setSel(id); if (id !== 35 && tab === "copa") setTab("resumen"); }}>
               {id === 35 ? "Serie A" : "Los Boyz"}
             </button>
           ))}
@@ -37,13 +38,21 @@ export default function Dashboard({ leagues, order }: { leagues: Record<number, 
           Temporada {d.season} · {d.league.last_event} jornadas. Campeón:{" "}
           <b style={{ color: "var(--mint)" }}>{champ.name}</b> ({champ.manager}).
         </p>
-        <div className="stats reveal" style={{ animationDelay: ".16s" }}>
+        <div className={`stats reveal ${isSerieA && d.copa ? "s4" : ""}`} style={{ animationDelay: ".16s" }}>
           <div className="stat"><div className="k">{d.standings.length}</div><div className="l">Equipos</div></div>
           <div className="stat"><div className="k">{d.league.last_event}</div><div className="l">Jornadas</div></div>
           <div className="stat champ">
             {champ.emblem && <img className="champ-emblem" src={`/${champ.emblem}`} alt={champ.name} />}
-            <div><div className="k acc" style={{ fontSize: "clamp(15px,2.4vw,21px)" }}>{champ.name}</div><div className="l">Campeón · {champ.pts} pts</div></div>
+            <div><div className="k acc" style={{ fontSize: "clamp(15px,2.4vw,21px)" }}>{champ.name}</div><div className="l">Campeón de Liga · {champ.pts} pts</div></div>
           </div>
+          {isSerieA && d.copa && (
+            <div className="stat champ cup">
+              {d.copa.champion.emblem
+                ? <img className="champ-emblem" src={`/${d.copa.champion.emblem}`} alt={d.copa.champion.name} />
+                : null}
+              <div><div className="k gold" style={{ fontSize: "clamp(15px,2.4vw,21px)" }}>{d.copa.champion.name}</div><div className="l">🏆 Campeón de Copa</div></div>
+            </div>
+          )}
         </div>
       </div></header>
 
@@ -54,8 +63,9 @@ export default function Dashboard({ leagues, order }: { leagues: Record<number, 
           <button className={tab === "versus" ? "on" : ""} onClick={() => setTab("versus")}>Versus</button>
           <button className={tab === "plantillas" ? "on" : ""} onClick={() => setTab("plantillas")}>Plantillas</button>
           <button className={tab === "puntos" ? "on" : ""} onClick={() => setTab("puntos")}>Puntos</button>
+          {isSerieA && d.copa && <button className={`cup ${tab === "copa" ? "on" : ""}`} onClick={() => setTab("copa")}>🏆 Copa</button>}
         </div>
-        {tab === "resumen" ? <Resumen d={d} /> : tab === "rendimiento" ? <Performance d={d} /> : tab === "versus" ? <Versus d={d} /> : tab === "plantillas" ? <Plantillas d={d} /> : <Puntos d={d} />}
+        {tab === "resumen" ? <Resumen d={d} /> : tab === "rendimiento" ? <Performance d={d} /> : tab === "versus" ? <Versus d={d} /> : tab === "plantillas" ? <Plantillas d={d} /> : tab === "copa" ? (d.copa ? <Copa d={d} /> : <Resumen d={d} />) : <Puntos d={d} />}
       </main>
 
       <footer><div className="wrap">

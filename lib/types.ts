@@ -20,6 +20,11 @@ export interface Points { tcols: string[]; teams: TeamPts[] }
 export interface RosterPlayer { el: number; name: string; pos: string }
 export interface Move { event: number; time: string; type: string; lentry: number; inEl: number; inName: string; inPos: string; outEl: number; outName: string; outPos: string }
 export interface Rosters { draft: Record<string, RosterPlayer[]>; moves: Move[] }
+export interface CopaTeam { id: number; seed: number; name: string; short: string; emblem: string | null }
+export interface CopaGw { gw: number; a: number; b: number; w: string }
+export interface CopaSeries { m: number; a: CopaTeam; b: CopaTeam; gws: CopaGw[]; winsA: number; winsB: number; ptsA: number; ptsB: number; winner: number; why: string }
+export interface CopaRound { name: string; tag: string; gws: number[]; series: CopaSeries[] }
+export interface Copa { name: string; seedEvent: number; seeds: CopaTeam[]; rounds: CopaRound[]; champion: CopaTeam }
 export interface League {
   season: string;
   league: { id: number; name: string; division: string; teams: number; last_event: number };
@@ -29,4 +34,5 @@ export interface League {
   versus: Versus;
   rosters: Rosters;
   points: Points;
+  copa?: Copa;
 }
