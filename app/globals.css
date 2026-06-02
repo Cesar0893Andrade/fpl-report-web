@@ -135,6 +135,15 @@ table.mx td.total .cell{background:rgba(255,255,255,.10);color:#fff;font-family:
 .rivrow .rivsc i{font-style:normal;color:var(--muted);margin:0 1px}
 .rivrow .rivsc small{font-size:10px;color:var(--muted);font-weight:600}
 @media(max-width:640px){.rivgrid{grid-template-columns:1fr}.rivrow .rivn{max-width:72px}}
+
+/* ---- Suerte de calendario (barra divergente) ---- */
+.luckrow{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.luckrow .side{display:flex;align-items:center;gap:7px;flex:0 0 180px;min-width:0}
+.luckbar{position:relative;flex:1;height:14px;background:rgba(255,255,255,.05);border-radius:7px;overflow:hidden}
+.luckbar .lb{display:block;height:100%;border-radius:7px;opacity:.9}
+.luckbar .lzero{position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.25)}
+.luckval{font-family:var(--h);font-weight:800;font-size:14px;min-width:46px;text-align:right;font-variant-numeric:tabular-nums}
+@media(max-width:640px){.luckrow .side{flex-basis:128px}.luckrow .rivn{max-width:78px}}
 @media(max-width:640px){.formgrid{grid-template-columns:1fr}}
 
 /* ---- Motion ---- */
