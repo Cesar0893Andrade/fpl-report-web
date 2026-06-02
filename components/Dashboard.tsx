@@ -4,8 +4,9 @@ import { League } from "@/lib/types";
 import Crest from "@/components/Crest";
 import Resumen from "@/components/Resumen";
 import Performance from "@/components/Performance";
+import Versus from "@/components/Versus";
 
-type Tab = "resumen" | "rendimiento";
+type Tab = "resumen" | "rendimiento" | "versus";
 
 export default function Dashboard({ leagues, order }: { leagues: Record<number, League>; order: number[] }) {
   const [sel, setSel] = useState(order[0]);
@@ -48,8 +49,9 @@ export default function Dashboard({ leagues, order }: { leagues: Record<number, 
         <div className="tabs">
           <button className={tab === "resumen" ? "on" : ""} onClick={() => setTab("resumen")}>Resumen</button>
           <button className={tab === "rendimiento" ? "on" : ""} onClick={() => setTab("rendimiento")}>Rendimiento</button>
+          <button className={tab === "versus" ? "on" : ""} onClick={() => setTab("versus")}>Versus</button>
         </div>
-        {tab === "resumen" ? <Resumen d={d} /> : <Performance d={d} />}
+        {tab === "resumen" ? <Resumen d={d} /> : tab === "rendimiento" ? <Performance d={d} /> : <Versus d={d} />}
       </main>
 
       <footer><div className="wrap">

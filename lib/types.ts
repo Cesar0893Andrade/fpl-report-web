@@ -11,10 +11,13 @@ export interface PerfRow {
   results: string[]; ranks: number[]; avg_rank: number; firsts: number;
   last5_rank: number; last10_rank: number;
 }
+export interface VersusRec { w: number; d: number; l: number }
+export interface Versus { ids: number[]; rec: Record<string, Record<string, VersusRec>> }
 export interface League {
   season: string;
   league: { id: number; name: string; division: string; teams: number; last_event: number };
   standings: Team[];
   progression: { events: number[]; series: SeriesItem[] };
   performance: { events: number[]; rows: PerfRow[] };
+  versus: Versus;
 }

@@ -123,6 +123,18 @@ table.mx td.total .cell{background:rgba(255,255,255,.10);color:#fff;font-family:
 .formrow .fsec{color:var(--muted);font-size:11px;min-width:60px;text-align:right;font-variant-numeric:tabular-nums}
 .legendchips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:-4px 0 14px}
 .legendchips .ck{font-style:normal;font-weight:700;font-size:11px;color:#15001a;padding:3px 10px;border-radius:99px}
+
+/* ---- Rivalidades (Versus) ---- */
+.rivgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.rivcard{padding:14px 18px}
+.rivrow{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line)}
+.rivrow .side{display:flex;align-items:center;gap:7px;flex:1;min-width:0}
+.rivrow .side.r{justify-content:flex-end}
+.rivrow .rivn{font-family:var(--h);font-weight:600;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
+.rivrow .rivsc{font-family:var(--h);font-weight:800;font-size:15px;padding:3px 10px;border-radius:8px;background:rgba(255,255,255,.07);white-space:nowrap}
+.rivrow .rivsc i{font-style:normal;color:var(--muted);margin:0 1px}
+.rivrow .rivsc small{font-size:10px;color:var(--muted);font-weight:600}
+@media(max-width:640px){.rivgrid{grid-template-columns:1fr}.rivrow .rivn{max-width:72px}}
 @media(max-width:640px){.formgrid{grid-template-columns:1fr}}
 
 /* ---- Motion ---- */
