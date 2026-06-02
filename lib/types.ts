@@ -13,6 +13,9 @@ export interface PerfRow {
 }
 export interface VersusRec { w: number; d: number; l: number }
 export interface Versus { ids: number[]; rec: Record<string, Record<string, VersusRec>> }
+export interface RosterPlayer { el: number; name: string; pos: string }
+export interface Move { event: number; time: string; type: string; lentry: number; inEl: number; inName: string; inPos: string; outEl: number; outName: string; outPos: string }
+export interface Rosters { draft: Record<string, RosterPlayer[]>; moves: Move[] }
 export interface League {
   season: string;
   league: { id: number; name: string; division: string; teams: number; last_event: number };
@@ -20,4 +23,5 @@ export interface League {
   progression: { events: number[]; series: SeriesItem[] };
   performance: { events: number[]; rows: PerfRow[] };
   versus: Versus;
+  rosters: Rosters;
 }
