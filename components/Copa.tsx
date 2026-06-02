@@ -37,9 +37,10 @@ export default function Copa({ d }: { d: League }) {
         </div>
         <div className="cs-gws">
           {s.gws.map((g) => (
-            <span className="csg" key={g.gw}>
+            <span className={`csg ${g.dead ? "dead" : ""}`} key={g.gw} title={g.dead ? "No se jugó · la serie ya estaba definida" : undefined}>
               <em>GW{g.gw}</em>
-              <span className="csg-sc"><b className={g.w === "a" ? "hl" : ""}>{g.a}</b><i>-</i><b className={g.w === "b" ? "hl" : ""}>{g.b}</b></span>
+              <span className="csg-sc"><b className={!g.dead && g.w === "a" ? "hl" : ""}>{g.a}</b><i>-</i><b className={!g.dead && g.w === "b" ? "hl" : ""}>{g.b}</b></span>
+              {g.dead && <em className="csg-x">no jugó</em>}
             </span>
           ))}
         </div>
