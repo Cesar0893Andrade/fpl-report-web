@@ -31,7 +31,6 @@ export default function Puntos({ d }: { d: League }) {
   const teams = d.points.teams;
   const [team, setTeam] = useState(teams[0]?.id ?? 0);
   const A = (t: TeamPts): PtsAgg => t[lens];
-  const roll = (a: PtsAgg, k: string) => ROLL.find((r) => r.k === k)!.keys.reduce((s, key) => s + (a.type[key] || 0), 0);
   const showLens = view === "posicion" || view === "tipo";
 
   return (
@@ -64,7 +63,7 @@ export default function Puntos({ d }: { d: League }) {
 
       {view === "equipos" && <Equipos teams={teams} meta={meta} />}
       {view === "posicion" && <Posicion teams={teams} meta={meta} A={A} lens={lens} />}
-      {view === "tipo" && <Tipo teams={teams} meta={meta} A={A} roll={roll} />}
+      {view === "tipo" && <Tipo teams={teams} meta={meta} A={A} />}
       {view === "jugador" && <Jugador teams={teams} meta={meta} team={team} setTeam={setTeam} />}
     </>
   );
@@ -142,58 +141,81 @@ function Posicion({ teams, meta, A, lens }: { teams: TeamPts[]; meta: any; A: (t
   );
 }
 
-/* ===================== TIPO: orientación + detalle por rubro ===================== */
-function Tipo({ teams, meta, A, roll }: { teams: TeamPts[]; meta: any; A: (t: TeamPts) => PtsAgg; roll: (a: PtsAgg, k: string) => number }) {
-  const tcols = teams[0] ? Object.keys(TLABEL) : [];
-  const rows = [...teams].sort((a, b) => A(b).total - A(a).total);
-  // base de la barra: suma de los aportes POSITIVOS (presencia+ataque+defensa+bonus)
-  const posSum = (t: TeamPts) => ROLL.filter((r) => r.k !== "dis").reduce((s, r) => s + Math.max(0, roll(A(t), r.k)), 0);
-  const maxPos = Math.max(1, ...rows.map(posSum));
+/* ===================== TIPO: orientación cliqueable + positivos/negativos ===================== */
+type Sign = "net" | "pos" | "neg";
+function Tipo({ teams, meta, A }: { teams: TeamPts[]; meta: any; A: (t: TeamPts) => PtsAgg }) {
+  const [sel, setSel] = useState<Set<string>>(() => new Set(ROLL.map((r) => r.k)));
+  const [sign, setSign] = useState<Sign>("net");
+  const toggle = (k: string) =>
+    setSel((prev) => { const n = new Set(prev); if (n.has(k)) { if (n.size > 1) n.delete(k); } else n.add(k); return n; });
+  const allOn = sel.size === ROLL.length;
+
+  const selRubros = ROLL.filter((r) => sel.has(r.k)).flatMap((r) => r.keys);
+  // descompone en positivos y negativos sobre los rubros seleccionados
+  const split = (a: PtsAgg) => {
+    let p = 0, n = 0;
+    for (const rk of selRubros) { const v = a.type[rk] || 0; if (v >= 0) p += v; else n += v; }
+    return { p, n, net: p + n };
+  };
+  const rows = teams.map((t) => ({ t, ...split(A(t)) }))
+    .sort((a, b) => (sign === "pos" ? b.p - a.p : sign === "neg" ? a.n - b.n : b.net - a.net));
+  const maxP = Math.max(1, ...rows.map((r) => r.p));
+  const maxN = Math.max(1, ...rows.map((r) => Math.abs(r.n)));
+  const metric = (r: { p: number; n: number; net: number }) => (sign === "pos" ? r.p : sign === "neg" ? r.n : r.net);
+
   const colMM = (key: string) => [Math.min(...teams.map((t) => A(t).type[key])), Math.max(...teams.map((t) => A(t).type[key]))] as const;
 
   return (
     <>
       <section className="block" style={{ paddingTop: 4 }}>
-        <div className="legendchips">
-          <span>Orientación:</span>
-          {ROLL.map((r) => <em className="ck" key={r.k} style={{ background: r.c, color: r.k === "bon" ? "#15001a" : "#fff" }}>{r.t}</em>)}
+        <div className="orctrl">
+          <div className="orchips">
+            <button className={`orchip all ${allOn ? "on" : ""}`} onClick={() => setSel(new Set(ROLL.map((r) => r.k)))}>Todo</button>
+            {ROLL.map((r) => (
+              <button key={r.k} className={`orchip ${sel.has(r.k) ? "on" : ""}`} style={sel.has(r.k) ? { background: r.c, borderColor: r.c, color: r.k === "bon" ? "#15001a" : "#fff" } : {}} onClick={() => toggle(r.k)}>{r.t}</button>
+            ))}
+          </div>
+          <div className="seg">
+            <button className={sign === "net" ? "on" : ""} onClick={() => setSign("net")}>Neto</button>
+            <button className={sign === "pos" ? "on" : ""} onClick={() => setSign("pos")}>Positivos</button>
+            <button className={sign === "neg" ? "on" : ""} onClick={() => setSign("neg")}>Negativos</button>
+          </div>
         </div>
         <div className="panel reveal ptslist">
-          {rows.map((t) => (
-            <div className="ptsrow" key={t.id}>
-              <span className="side"><Badge emblem={meta[t.id].emblem} short={meta[t.id].short} i={meta[t.id].i} /><span className="rivn">{meta[t.id].name}</span></span>
-              <div className="ptsbar rollbar">
-                {ROLL.filter((r) => r.k !== "dis").map((r) => {
-                  const v = Math.max(0, roll(A(t), r.k));
-                  if (!v) return null;
-                  return <span key={r.k} style={{ width: `${(v / maxPos) * 100}%`, background: r.c }} title={`${r.t}: ${roll(A(t), r.k)}`}>{v / maxPos > 0.07 ? v : ""}</span>;
-                })}
+          {rows.map((r) => (
+            <div className="ptsrow" key={r.t.id}>
+              <span className="side"><Badge emblem={meta[r.t.id].emblem} short={meta[r.t.id].short} i={meta[r.t.id].i} /><span className="rivn">{meta[r.t.id].name}</span></span>
+              <div className="divbar" title={`+${r.p} / ${r.n} = ${r.net}`}>
+                <span className="dn">{sign !== "pos" && r.n < 0 ? <i style={{ width: `${(Math.abs(r.n) / maxN) * 100}%` }}>{Math.abs(r.n) / maxN > 0.16 ? r.n : ""}</i> : null}</span>
+                <span className="dp">{sign !== "neg" && r.p > 0 ? <i style={{ width: `${(r.p / maxP) * 100}%` }}>{r.p / maxP > 0.12 ? r.p : ""}</i> : null}</span>
               </div>
-              <span className="ptsuse" style={{ width: 64 }}>{A(t).total}</span>
+              <span className="ptsuse" style={{ width: 60, color: metric(r) < 0 ? "var(--pink)" : "var(--mint)" }}>{metric(r)}</span>
             </div>
           ))}
         </div>
-        <p className="legendnote">Composición de los puntos por orientación (barra = suma de aportes positivos). El detalle exacto, incluido lo negativo (goles en contra, disciplina), está abajo.</p>
+        <p className="legendnote">
+          Clic en las orientaciones para incluirlas o quitarlas del ranking · <b style={{ color: "var(--mint)" }}>verde = positivos</b> a la derecha, <b style={{ color: "var(--pink)" }}>rojo = negativos</b> a la izquierda (goles en contra, disciplina). «Neto» = positivos − negativos. {selRubros.length < 9 ? "Ranking solo de lo seleccionado." : "Todas las orientaciones."}
+        </p>
       </section>
 
       <section className="block">
         <h2 className="h2">Detalle por <span className="g">rubro</span></h2>
-        <p className="kicker">Puntos ganados (o perdidos) en cada categoría de puntuación FPL</p>
+        <p className="kicker">Puntos ganados (o perdidos) en cada categoría seleccionada</p>
         <div className="panel reveal"><div className="matrix"><table className="mx">
           <thead><tr>
             <th className="sticky">Equipo</th>
-            {tcols.map((c) => <th key={c}>{TLABEL[c]}</th>)}
-            <th className="tot">Total</th>
+            {selRubros.map((c) => <th key={c}>{TLABEL[c]}</th>)}
+            <th className="tot">Neto</th>
           </tr></thead>
           <tbody>
-            {rows.map((t) => (
-              <tr key={t.id}>
-                <td className="sticky"><div className="team"><Badge emblem={meta[t.id].emblem} short={meta[t.id].short} i={meta[t.id].i} /><div className="nm">{meta[t.id].name}</div></div></td>
-                {tcols.map((c) => {
-                  const v = A(t).type[c]; const [mn, mx] = colMM(c);
+            {rows.map((r) => (
+              <tr key={r.t.id}>
+                <td className="sticky"><div className="team"><Badge emblem={meta[r.t.id].emblem} short={meta[r.t.id].short} i={meta[r.t.id].i} /><div className="nm">{meta[r.t.id].name}</div></div></td>
+                {selRubros.map((c) => {
+                  const v = A(r.t).type[c]; const [mn, mx] = colMM(c);
                   return <td key={c}><span className="cell" style={{ background: rygColor(v, mn, mx), color: "#15001a" }}>{v}</span></td>;
                 })}
-                <td className="total"><span className="cell" style={{ fontWeight: 800 }}>{A(t).total}</span></td>
+                <td className="total"><span className="cell" style={{ fontWeight: 800 }}>{r.net}</span></td>
               </tr>
             ))}
           </tbody>
@@ -205,10 +227,14 @@ function Tipo({ teams, meta, A, roll }: { teams: TeamPts[]; meta: any; A: (t: Te
 }
 
 /* ===================== JUGADOR: aporte por jugador del equipo ===================== */
+type Ord = "total" | "prom";
 function Jugador({ teams, meta, team, setTeam }: { teams: TeamPts[]; meta: any; team: number; setTeam: (id: number) => void }) {
+  const [ord, setOrd] = useState<Ord>("total");
   const t = teams.find((x) => x.id === team) ?? teams[0];
-  const players = t.players;
+  const prom = (p: { sq: number; gp: number }) => (p.gp > 0 ? p.sq / p.gp : 0);
+  const players = [...t.players].sort((a, b) => (ord === "prom" ? prom(b) - prom(a) : b.sq - a.sq));
   const maxSq = Math.max(1, ...players.map((p) => p.sq));
+  const maxPr = Math.max(1, ...players.map(prom));
   return (
     <>
       <section className="block" style={{ paddingTop: 4 }}>
@@ -221,25 +247,31 @@ function Jugador({ teams, meta, team, setTeam }: { teams: TeamPts[]; meta: any; 
         </div>
       </section>
       <section className="block" style={{ paddingTop: 6 }}>
-        <p className="kicker">{players.length} jugadores vistieron la camiseta de <b>{meta[team].name}</b>. «Plantilla» = todo lo que sumó mientras lo tuviste; «Titular» = solo cuando lo alineaste. La diferencia es lo que se quedó en tu banca.</p>
+        <div className="secthead">
+          <p className="kicker" style={{ margin: 0 }}>{players.length} jugadores vistieron la camiseta de <b>{meta[team].name}</b>. «GJ» = jornadas en plantilla · «Prom» = puntos por jornada (plantilla ÷ GJ). La <b>banca</b> es lo que sumó sin alinearse.</p>
+          <div className="seg"><button className={ord === "total" ? "on" : ""} onClick={() => setOrd("total")}>Total</button><button className={ord === "prom" ? "on" : ""} onClick={() => setOrd("prom")}>Promedio</button></div>
+        </div>
         <div className="panel reveal plrtable">
-          <div className="plr plrhead"><span className="pp" /><span className="pnm">Jugador</span><span className="pv">Plantilla</span><span className="pv">Titular</span><span className="pv">Banca</span></div>
+          <div className="plr plrhead"><span className="pp" /><span className="pnm">Jugador</span><span className="pv gj">GJ</span><span className="pv">Plant.</span><span className="pv">Titular</span><span className="pv bench">Banca</span><span className="pv">Prom</span></div>
           {players.map((p) => {
-            const bench = p.sq - p.xi;
+            const bench = p.sq - p.xi; const pr = prom(p);
+            const w = ord === "prom" ? (pr / maxPr) * 100 : (p.sq / maxSq) * 100;
             return (
               <div className="plr" key={p.el}>
                 <span className="pp"><em className="posdot" style={{ background: POSC[p.pos] }}>{p.pos}</em></span>
                 <span className="pnm">{p.name}
-                  <span className="plbar"><i style={{ width: `${(p.sq / maxSq) * 100}%` }} /><b style={{ width: `${(p.xi / maxSq) * 100}%` }} /></span>
+                  <span className="plbar"><i style={{ width: `${w}%` }} />{ord === "total" ? <b style={{ width: `${(p.xi / maxSq) * 100}%` }} /> : null}</span>
                 </span>
+                <span className="pv dim gj">{p.gp}</span>
                 <span className="pv strong">{p.sq}</span>
                 <span className="pv">{p.xi}</span>
-                <span className="pv" style={{ color: bench > 0 ? "var(--pink)" : "rgba(255,255,255,.35)" }}>{bench > 0 ? bench : "—"}</span>
+                <span className="pv bench" style={{ color: bench > 0 ? "var(--pink)" : "rgba(255,255,255,.35)" }}>{bench > 0 ? bench : "—"}</span>
+                <span className="pv" style={{ color: "var(--cyan)" }}>{pr.toFixed(1)}</span>
               </div>
             );
           })}
         </div>
-        <p className="legendnote">Ordenado por puntos de plantilla. La barra clara es el total acumulado; la franja verde, lo que contó como titular.</p>
+        <p className="legendnote">Ordenado por {ord === "prom" ? "puntos por jornada (resalta al que rindió mucho en pocas fechas)" : "puntos de plantilla (la franja verde es lo que contó como titular)"}. «Prom» usa las jornadas que estuvo en tu plantilla.</p>
       </section>
     </>
   );

@@ -13,7 +13,7 @@ export interface PerfRow {
 }
 export interface VersusRec { w: number; d: number; l: number }
 export interface Versus { ids: number[]; rec: Record<string, Record<string, VersusRec>> }
-export interface PlayerPts { el: number; name: string; pos: string; sq: number; xi: number }
+export interface PlayerPts { el: number; name: string; pos: string; sq: number; xi: number; gp: number; gpx: number }
 export interface PtsAgg { total: number; pos: Record<string, number>; type: Record<string, number> }
 export interface TeamPts { id: number; squad: PtsAgg; xi: PtsAgg; players: PlayerPts[] }
 export interface Points { tcols: string[]; teams: TeamPts[] }

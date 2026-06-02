@@ -207,8 +207,28 @@ table.mx td.total .cell{background:rgba(255,255,255,.10);color:#fff;font-family:
 .ptsuse{font-family:var(--h);font-weight:800;font-size:13px;min-width:46px;text-align:right;color:var(--mint)}
 @media(max-width:640px){.ptsrow .side{flex-basis:120px}.ptsrow .rivn{max-width:88px}}
 
-.plrtable{padding:2px 14px 10px}
-.plr{display:grid;grid-template-columns:54px 1fr 78px 70px 64px;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
+/* orientación cliqueable + filtro de signo */
+.orctrl{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.orchips{display:flex;gap:7px;flex-wrap:wrap}
+.orchip{font-family:var(--h);font-weight:700;font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:99px;cursor:pointer;transition:.18s}
+.orchip:hover{color:var(--ink)}
+.orchip.on{color:#fff}
+.orchip.all{border-style:dashed}
+.orchip.all.on{color:var(--purple);background:linear-gradient(90deg,var(--mint),var(--cyan));border-color:transparent}
+.orctrl .seg{margin-bottom:0}
+
+/* barra divergente positivos/negativos */
+.divbar{flex:1;display:flex;align-items:center;height:24px;position:relative}
+.divbar::before{content:"";position:absolute;left:50%;top:1px;bottom:1px;width:1px;background:rgba(255,255,255,.28);z-index:1}
+.divbar .dn,.divbar .dp{width:50%;display:flex;align-items:center;height:18px}
+.divbar .dn{justify-content:flex-end}
+.divbar .dp{justify-content:flex-start}
+.divbar i{display:flex;align-items:center;height:100%;font-family:var(--h);font-weight:800;font-size:11px;color:#15001a;transition:width .45s cubic-bezier(.2,.7,.2,1)}
+.divbar .dn i{justify-content:flex-start;padding-left:6px;border-radius:6px 0 0 6px;background:linear-gradient(90deg,#F8696B,#ff9aa0)}
+.divbar .dp i{justify-content:flex-end;padding-right:6px;border-radius:0 6px 6px 0;background:linear-gradient(90deg,var(--green),var(--mint))}
+
+.plrtable{padding:2px 14px 10px;max-height:620px;overflow-y:auto}
+.plr{display:grid;grid-template-columns:44px 1fr 36px 56px 56px 52px 50px;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line)}
 .plrhead{font-family:var(--h);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border-top:0;position:sticky;top:0;background:linear-gradient(180deg,rgba(42,0,48,.96),rgba(42,0,48,.86));z-index:1}
 .plr .pp{display:flex;justify-content:center}
 .posdot{font-style:normal;font-family:var(--h);font-weight:800;font-size:9.5px;color:#15001a;padding:3px 6px;border-radius:6px;letter-spacing:.02em}
@@ -218,5 +238,5 @@ table.mx td.total .cell{background:rgba(255,255,255,.10);color:#fff;font-family:
 .plbar b{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--green),var(--mint))}
 .plr .pv{font-family:var(--h);font-weight:700;font-size:13.5px;text-align:right;font-variant-numeric:tabular-nums}
 .plr .pv.strong{color:var(--ink);font-weight:800}
-.plrtable{max-height:620px;overflow-y:auto}
-@media(max-width:640px){.plr{grid-template-columns:42px 1fr 60px 56px 50px;gap:5px}.plr .pnm{font-size:12.5px}}
+.plr .pv.dim{color:var(--muted);font-weight:600}
+@media(max-width:640px){.plr{grid-template-columns:38px 1fr 52px 50px 48px;gap:5px}.plr .pnm{font-size:12.5px}.plr .gj,.plr .bench{display:none}.orctrl{gap:8px}}
