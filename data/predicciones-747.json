@@ -1,0 +1,267 @@
+{
+  "schema": "predicciones-gw.v1",
+  "season": "2026-27",
+  "league_id": 747,
+  "sigma": 16.0,
+  "models": [
+    "ENS",
+    "FPLR",
+    "SL",
+    "TA"
+  ],
+  "notas": {
+    "xi": "XI optimo teorico por modelo sobre el roster de 15 (formaciones validas 1GK/3-5DEF/2-5MID/1-3FWD)",
+    "p": "P(gana A) = Phi((muA-muB)/16), sigma calibrada 25/26 - supuesto del modelo",
+    "pub": "Publicado despues del deadline de la GW"
+  },
+  "teams": [
+    {
+      "lentry": 1735,
+      "entry": 1734,
+      "name": "Iniestazo",
+      "short": "CA"
+    },
+    {
+      "lentry": 1791,
+      "entry": 1790,
+      "name": "Gunnerholics",
+      "short": "RV"
+    },
+    {
+      "lentry": 223148,
+      "entry": 221689,
+      "name": "Changretta Mobb",
+      "short": "CC"
+    },
+    {
+      "lentry": 223887,
+      "entry": 222405,
+      "name": "MotherFoca FC ⭐️",
+      "short": "JV"
+    },
+    {
+      "lentry": 246330,
+      "entry": 244369,
+      "name": "The Kop⭐️⭐️",
+      "short": "SJ"
+    },
+    {
+      "lentry": 266583,
+      "entry": 264305,
+      "name": "La Lechita F.C.",
+      "short": "SD"
+    },
+    {
+      "lentry": 266713,
+      "entry": 264435,
+      "name": "DP.Mansion ⭐️",
+      "short": "AD"
+    },
+    {
+      "lentry": 267374,
+      "entry": 265087,
+      "name": "GALACTICOS",
+      "short": "lg"
+    },
+    {
+      "lentry": 269300,
+      "entry": 266992,
+      "name": "SEBTOR FC",
+      "short": "ST"
+    },
+    {
+      "lentry": 272159,
+      "entry": 269796,
+      "name": "Cachi FC",
+      "short": "JG"
+    }
+  ],
+  "gws": {
+    "1": {
+      "generated_at": "2026-08-21T17:41:10Z",
+      "projection_version_gw": 1,
+      "matchups": [
+        {
+          "a": 266713,
+          "b": 1735,
+          "by_model": {
+            "ENS": {
+              "mu_a": 40.3,
+              "mu_b": 43.6,
+              "form_a": "4-4-2",
+              "form_b": "4-5-1",
+              "p_a": 0.418
+            },
+            "FPLR": {
+              "mu_a": 40.5,
+              "mu_b": 44.2,
+              "form_a": "4-4-2",
+              "form_b": "4-4-2",
+              "p_a": 0.408
+            },
+            "SL": {
+              "mu_a": 40.1,
+              "mu_b": 43.0,
+              "form_a": "4-4-2",
+              "form_b": "4-5-1",
+              "p_a": 0.427
+            },
+            "TA": {
+              "mu_a": 40.4,
+              "mu_b": 44.3,
+              "form_a": "4-4-2",
+              "form_b": "4-4-2",
+              "p_a": 0.405,
+              "cov_a": 14,
+              "cov_b": 15
+            }
+          }
+        },
+        {
+          "a": 267374,
+          "b": 266583,
+          "by_model": {
+            "ENS": {
+              "mu_a": 42.9,
+              "mu_b": 46.2,
+              "form_a": "4-4-2",
+              "form_b": "3-5-2",
+              "p_a": 0.417
+            },
+            "FPLR": {
+              "mu_a": 41.8,
+              "mu_b": 45.3,
+              "form_a": "4-4-2",
+              "form_b": "3-5-2",
+              "p_a": 0.411
+            },
+            "SL": {
+              "mu_a": 43.9,
+              "mu_b": 47.1,
+              "form_a": "4-4-2",
+              "form_b": "4-4-2",
+              "p_a": 0.421
+            },
+            "TA": {
+              "mu_a": 42.2,
+              "mu_b": 45.0,
+              "form_a": "3-5-2",
+              "form_b": "4-4-2",
+              "p_a": 0.431,
+              "cov_a": 15,
+              "cov_b": 14
+            }
+          }
+        },
+        {
+          "a": 269300,
+          "b": 246330,
+          "by_model": {
+            "ENS": {
+              "mu_a": 39.0,
+              "mu_b": 38.2,
+              "form_a": "4-4-2",
+              "form_b": "3-5-2",
+              "p_a": 0.521
+            },
+            "FPLR": {
+              "mu_a": 37.5,
+              "mu_b": 39.2,
+              "form_a": "4-4-2",
+              "form_b": "3-5-2",
+              "p_a": 0.456
+            },
+            "SL": {
+              "mu_a": 40.6,
+              "mu_b": 37.2,
+              "form_a": "4-4-2",
+              "form_b": "3-4-3",
+              "p_a": 0.584
+            },
+            "TA": {
+              "mu_a": 38.2,
+              "mu_b": 38.4,
+              "form_a": "4-4-2",
+              "form_b": "3-4-3",
+              "p_a": 0.494,
+              "cov_a": 14,
+              "cov_b": 14
+            }
+          }
+        },
+        {
+          "a": 272159,
+          "b": 223887,
+          "by_model": {
+            "ENS": {
+              "mu_a": 37.7,
+              "mu_b": 43.6,
+              "form_a": "4-4-2",
+              "form_b": "3-4-3",
+              "p_a": 0.356
+            },
+            "FPLR": {
+              "mu_a": 36.5,
+              "mu_b": 44.4,
+              "form_a": "4-4-2",
+              "form_b": "3-4-3",
+              "p_a": 0.311
+            },
+            "SL": {
+              "mu_a": 39.0,
+              "mu_b": 42.8,
+              "form_a": "4-4-2",
+              "form_b": "3-4-3",
+              "p_a": 0.406
+            },
+            "TA": {
+              "mu_a": 36.8,
+              "mu_b": 43.9,
+              "form_a": "4-4-2",
+              "form_b": "4-4-2",
+              "p_a": 0.328,
+              "cov_a": 15,
+              "cov_b": 14
+            }
+          }
+        },
+        {
+          "a": 1791,
+          "b": 223148,
+          "by_model": {
+            "ENS": {
+              "mu_a": 47.0,
+              "mu_b": 46.4,
+              "form_a": "4-4-2",
+              "form_b": "4-5-1",
+              "p_a": 0.515
+            },
+            "FPLR": {
+              "mu_a": 48.2,
+              "mu_b": 45.1,
+              "form_a": "4-4-2",
+              "form_b": "4-5-1",
+              "p_a": 0.577
+            },
+            "SL": {
+              "mu_a": 46.2,
+              "mu_b": 47.8,
+              "form_a": "4-3-3",
+              "form_b": "4-5-1",
+              "p_a": 0.461
+            },
+            "TA": {
+              "mu_a": 46.5,
+              "mu_b": 46.8,
+              "form_a": "4-4-2",
+              "form_b": "4-5-1",
+              "p_a": 0.492,
+              "cov_a": 15,
+              "cov_b": 15
+            }
+          }
+        }
+      ]
+    }
+  }
+}

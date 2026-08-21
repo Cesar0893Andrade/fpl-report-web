@@ -348,3 +348,22 @@ table.embt{min-width:560px}
 .tpick .rd{font-family:var(--h);font-weight:800;font-size:11px;color:var(--muted);min-width:34px}
 .tpick .nm{font-family:var(--h);font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tpick .cl{color:var(--muted);font-size:12px;font-weight:600;min-width:36px;text-align:right}
+
+/* predicciones por modelo dentro del cruce (fuentes enmascaradas) */
+.predbox{grid-column:1/-1;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.predrow{display:grid;grid-template-columns:46px 38px 1fr 38px minmax(78px,auto);align-items:center;gap:8px;padding:3px 0;color:var(--muted)}
+.predrow .mchip{font-family:var(--h);font-weight:800;font-size:9.5px;letter-spacing:.06em;text-align:center;color:var(--muted);border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:99px;padding:3px 0}
+.predrow .pmu{font-family:var(--h);font-weight:600;font-size:12px;font-variant-numeric:tabular-nums;text-align:right}
+.predrow .pmu.r{text-align:left}
+.predbar{display:block;height:6px;border-radius:4px;background:rgba(4,245,255,.30);overflow:hidden}
+.predbar b{display:block;height:100%;border-radius:4px 0 0 4px;background:rgba(102,255,182,.55);transition:width .45s cubic-bezier(.2,.7,.2,1)}
+.predfav{font-family:var(--h);font-weight:700;font-size:11px;text-align:right;white-space:nowrap;color:var(--muted)}
+.predrow.ens{color:var(--ink)}
+.predrow.ens .mchip{color:var(--purple);background:linear-gradient(90deg,var(--green),var(--mint));border-color:transparent}
+.predrow.ens .pmu{font-weight:800;font-size:12.5px}
+.predrow.ens .predbar{height:8px;background:rgba(4,245,255,.55)}
+.predrow.ens .predbar b{background:linear-gradient(90deg,var(--green),var(--mint))}
+.predrow.ens .predfav{color:var(--mint)}
+.predcov{font-size:10.5px;color:var(--muted);margin-top:4px;text-align:right}
+@media(max-width:420px){.predrow{grid-template-columns:40px 34px 1fr 34px minmax(66px,auto);gap:6px}.predrow .pmu{font-size:11px}.predfav{font-size:10px}}
+@media (prefers-reduced-motion:reduce){.predbar b{transition:none}}

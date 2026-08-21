@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Crest from "@/components/Crest";
 import Badge from "@/components/Badge";
-import { LeagueLive, TeamLive, DraftPick, EmbargoPlayer, GwMatch } from "@/lib/typesLive";
+import { LeagueLive, TeamLive, DraftPick, EmbargoPlayer, GwMatch, Predicciones, PredMatchup } from "@/lib/typesLive";
 
 const POSC: Record<string, string> = { GKP: "#FFD166", DEF: "#04F5FF", MID: "#00FF87", FWD: "#FF2D78" };
 const MES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
@@ -15,6 +15,41 @@ function fmtAdded(iso: string) {
 
 function PosChip({ pos }: { pos: string }) {
   return <em className="posdot" style={{ background: POSC[pos] || "#D6DDE6" }}>{pos}</em>;
+}
+
+// Mini-tabla de modelos enmascarados (ENS/FPLR/SL/TA) para un cruce.
+// pm.a puede venir invertido respecto de la card: se reorienta con flip.
+const PRED_ORDER = ["ENS", "FPLR", "SL", "TA"];
+
+function PredMini({ pm, m, aShort, bShort }: { pm: PredMatchup; m: GwMatch; aShort: string; bShort: string }) {
+  const flip = pm.a !== m.a;
+  const ta = pm.by_model["TA"];
+  const taPartial = !!ta && Math.min(ta.cov_a ?? 15, ta.cov_b ?? 15) < 15;
+  return (
+    <div className="predbox">
+      {PRED_ORDER.map((mc) => {
+        const bm = pm.by_model[mc];
+        if (!bm) return null;
+        const muA = flip ? bm.mu_b : bm.mu_a;
+        const muB = flip ? bm.mu_a : bm.mu_b;
+        const pA = flip ? 1 - bm.p_a : bm.p_a;
+        const favA = pA >= 0.5;
+        const pct = Math.round((favA ? pA : 1 - pA) * 100);
+        const wA = muA + muB > 0 ? (muA / (muA + muB)) * 100 : 50;
+        const star = mc === "TA" && taPartial;
+        return (
+          <div className={`predrow${mc === "ENS" ? " ens" : ""}`} key={mc}>
+            <span className="mchip">{mc}{star ? "*" : ""}</span>
+            <span className="pmu">{muA.toFixed(1)}</span>
+            <span className="predbar"><b style={{ width: `${wA}%` }} /></span>
+            <span className="pmu r">{muB.toFixed(1)}</span>
+            <span className="predfav">fav: {favA ? aShort : bShort} {pct}%</span>
+          </div>
+        );
+      })}
+      {taPartial && <div className="predcov">*cobertura parcial</div>}
+    </div>
+  );
 }
 
 function TeamSide({ t, i, right }: { t: TeamLive; i: number; right?: boolean }) {
@@ -29,7 +64,7 @@ function TeamSide({ t, i, right }: { t: TeamLive; i: number; right?: boolean }) 
   );
 }
 
-export default function HomeLive({ d }: { d: LeagueLive }) {
+export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Predicciones }) {
   const teamIdx = useMemo(() => {
     const m = new Map<number, { t: TeamLive; i: number }>();
     d.teams.forEach((t, i) => m.set(t.lentry, { t, i }));
@@ -68,6 +103,11 @@ export default function HomeLive({ d }: { d: LeagueLive }) {
 
   const tf = (l: number) => teamIdx.get(l);
 
+  // Predicciones de la GW en juego (ausencia elegante si no hay clave)
+  const predGw = pred.gws[String(d.gw.event)] ?? null;
+  const predFor = (m: GwMatch) =>
+    predGw?.matchups.find((x) => (x.a === m.a && x.b === m.b) || (x.a === m.b && x.b === m.a)) ?? null;
+
   return (
     <>
       <nav className="nav"><div className="wrap">
@@ -103,6 +143,7 @@ export default function HomeLive({ d }: { d: LeagueLive }) {
             {d.gw.matches.map((m: GwMatch, k: number) => {
               const A = tf(m.a); const B = tf(m.b);
               if (!A || !B) return null;
+              const pm = predFor(m);
               return (
                 <div className="vscard reveal" key={k} style={{ animationDelay: `${k * 0.04}s` }}>
                   <TeamSide t={A.t} i={A.i} />
@@ -112,10 +153,17 @@ export default function HomeLive({ d }: { d: LeagueLive }) {
                       : <>vs<small>por jugarse</small></>}
                   </div>
                   <TeamSide t={B.t} i={B.i} right />
+                  {pm && <PredMini pm={pm} m={m} aShort={A.t.short} bShort={B.t.short} />}
                 </div>
               );
             })}
           </div>
+          {predGw && (
+            <p className="footnote">
+              Predicciones al deadline · XI óptimo teórico por modelo sobre cada roster · fuentes
+              enmascaradas (ENS = ensamble de la casa) · P(gana) = modelo Φ(Δμ/16).
+            </p>
+          )}
         </section>
 
         {/* ---- La Tabla ---- */}
