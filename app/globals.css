@@ -293,3 +293,58 @@ table.mx td.total .cell{background:rgba(255,255,255,.10);color:#fff;font-family:
 .seedrow .stag{font-size:11px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:3px 10px}
 .seedrow.bye .stag{color:var(--mint);border-color:rgba(102,255,182,.3)}
 @media(max-width:680px){.copagrid{grid-template-columns:1fr}}
+
+/* === 26-27 home === */
+.navlink{margin-left:auto;font-family:var(--h);font-weight:700;font-size:13px;color:var(--muted);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:999px;transition:.2s;white-space:nowrap}
+.navlink:hover{color:var(--purple);background:linear-gradient(90deg,var(--mint),var(--cyan));border-color:transparent}
+.backbar{background:linear-gradient(180deg,rgba(0,0,0,.34),rgba(0,0,0,.18));border-bottom:1px solid var(--line)}
+.backbar .wrap{display:flex;align-items:center;height:44px}
+.backlink{font-family:var(--h);font-weight:700;font-size:13px;color:var(--mint);text-decoration:none}
+.backlink:hover{text-decoration:underline}
+.stats.live4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:860px){.stats.live4{grid-template-columns:1fr 1fr}}
+
+/* jornada: cruces */
+.vsgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vscard{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;backdrop-filter:blur(6px)}
+.vsteam{display:flex;align-items:center;gap:10px;min-width:0}
+.vsteam.r{flex-direction:row-reverse;text-align:right}
+.vsteam>div{min-width:0}
+.vsteam .nm{font-family:var(--h);font-weight:700;font-size:13.5px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vsteam .mg{color:var(--muted);font-size:11.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vsmid{font-family:var(--h);font-weight:800;font-size:15px;color:var(--muted);text-align:center;white-space:nowrap}
+.vsmid .sc{color:var(--ink);font-size:19px}
+.vsmid small{display:block;font-family:var(--b);font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+@media(max-width:720px){.vsgrid{grid-template-columns:1fr}}
+
+/* chip de equipo nuevo */
+.newchip{display:inline-block;font-family:var(--h);font-weight:800;font-size:9.5px;letter-spacing:.08em;color:var(--purple);background:linear-gradient(90deg,var(--green),var(--mint));border-radius:99px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+
+/* embargo */
+.cdpanel{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;background:var(--card);border:1px solid rgba(102,255,182,.28);border-radius:18px;padding:18px 22px;margin:4px 0 16px;backdrop-filter:blur(6px)}
+.cdlabel{font-family:var(--h);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mint)}
+.cdmeta{color:var(--muted);font-size:12.5px;margin-top:4px}
+.cdunits{display:flex;gap:10px}
+.cdu{display:flex;flex-direction:column;align-items:center;min-width:64px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.cdu b{font-family:var(--h);font-weight:800;font-size:clamp(22px,3.4vw,30px);line-height:1;font-variant-numeric:tabular-nums}
+.cdu span{color:var(--muted);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-top:5px}
+.cddone{font-family:var(--h);font-weight:800;font-size:clamp(16px,2.6vw,22px);color:var(--mint)}
+table.embt{min-width:560px}
+.embname .full{display:block;color:var(--muted);font-size:11.5px;font-weight:500}
+.clubtag{font-family:var(--h);font-weight:700;font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:3px 8px}
+.footnote{color:var(--muted);font-size:12px;margin-top:12px}
+
+/* draft */
+.r1strip{display:flex;gap:10px;overflow-x:auto;padding:4px 0 12px}
+.pickcard{flex:none;width:152px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.pickcard .pk{font-family:var(--h);font-weight:800;font-size:10.5px;letter-spacing:.08em;color:var(--mint)}
+.pickcard .pn{font-family:var(--h);font-weight:700;font-size:14px;margin:6px 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pickcard .pc{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:11.5px;font-weight:600}
+.pickcard .tm{display:flex;align-items:center;gap:6px;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.autotag{font-family:var(--h);font-weight:800;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#3a2400;background:linear-gradient(90deg,#FFD166,#FFB838);border-radius:99px;padding:2px 7px;flex:none}
+.tpicks{padding:6px 16px}
+.tpick{display:flex;align-items:center;gap:11px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
+.tpick:first-child{border-top:0}
+.tpick .rd{font-family:var(--h);font-weight:800;font-size:11px;color:var(--muted);min-width:34px}
+.tpick .nm{font-family:var(--h);font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tpick .cl{color:var(--muted);font-size:12px;font-weight:600;min-width:36px;text-align:right}

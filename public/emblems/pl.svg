@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Escudo generico de la liga">
+  <!-- Original generic crest: purple field, abstract crown over ball, mint accent. -->
+  <rect width="64" height="64" fill="#37003C"/>
+  <path d="M14 8h36v26c0 12-7.6 19.6-18 23-10.4-3.4-18-11-18-23Z" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linejoin="round"/>
+  <path d="M21 27v-9l6.2 4.6L32 15l4.8 7.6L43 18v9Z" fill="#FFFFFF"/>
+  <circle cx="32" cy="39" r="7.2" fill="none" stroke="#FFFFFF" stroke-width="2.4"/>
+  <circle cx="32" cy="39" r="2.2" fill="#FFFFFF"/>
+  <rect x="22" y="51" width="20" height="2.8" rx="1.4" fill="#66FFB6"/>
+</svg>

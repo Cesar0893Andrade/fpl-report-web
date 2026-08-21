@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Fantasy Premier League VII · Reporte de Liga",
-  description: "Reporte dinámico de la liga draft — tabla, rendimiento y evolución por jornada.",
+  title: "Fantasy Premier League VIII - Liga 26/27",
+  description: "Liga draft H2H 2026-27 — jornada en vivo, tabla, el draft completo y los jugadores en embargo hasta la GW3.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
