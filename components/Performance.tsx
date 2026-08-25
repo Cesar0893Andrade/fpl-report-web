@@ -20,10 +20,12 @@ export default function Performance({ d }: { d: League }) {
     : [...rows].sort((a, b) => b.total - a.total);
   const cellVal = (r: PerfRow, j: number) => (mode === "rank" ? r.ranks[j] : r.points[j]);
 
+  // Una ventana solo tiene sentido si ya se jugaron mas jornadas que su tamano: si no,
+  // "ultimas 5" y "ultimas 10" son la misma tabla repetida (y la misma que el total).
   const windows = [
-    { t: "Últimas 5", pts: (r: PerfRow) => r.last5, rank: (r: PerfRow) => r.last5_rank },
-    { t: "Últimas 10", pts: (r: PerfRow) => r.last10, rank: (r: PerfRow) => r.last10_rank },
-  ];
+    { t: "Últimas 5", n: 5, pts: (r: PerfRow) => r.last5, rank: (r: PerfRow) => r.last5_rank },
+    { t: "Últimas 10", n: 10, pts: (r: PerfRow) => r.last10, rank: (r: PerfRow) => r.last10_rank },
+  ].filter((w) => events.length > w.n);
 
   return (
     <>
@@ -71,7 +73,13 @@ export default function Performance({ d }: { d: League }) {
 
       <section className="block">
         <h2 className="h2"><span className="g">Form</span> · ¿quién está caliente?</h2>
-        <p className="kicker">{mode === "rank" ? "Por posición promedio en las últimas jornadas (menor = mejor)" : "Por puntos sumados en las últimas jornadas"}</p>
+        <p className="kicker">
+          {windows.length === 0
+            ? `Con ${events.length} ${events.length === 1 ? "jornada jugada" : "jornadas jugadas"} todavía no hay racha que medir: la forma aparece cuando haya más fechas que la ventana.`
+            : mode === "rank"
+              ? "Por posición promedio en las últimas jornadas (menor = mejor)"
+              : "Por puntos sumados en las últimas jornadas"}
+        </p>
         <div className="formgrid">
           {windows.map((w) => {
             const arr = mode === "rank"

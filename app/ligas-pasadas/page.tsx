@@ -16,6 +16,7 @@ export default function Page() {
       <div className="backbar">
         <div className="wrap">
           <Link className="backlink" href="/">&larr; Liga actual 26/27</Link>
+          <Link className="backlink" href="/temporada">La temporada 26/27 &rarr;</Link>
         </div>
       </div>
       <Dashboard leagues={leagues} order={[35, 24996]} />

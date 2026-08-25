@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Crest from "@/components/Crest";
 import Badge from "@/components/Badge";
+import GameClock from "@/components/GameClock";
 import { LeagueLive, TeamLive, DraftPick, EmbargoPlayer, GwMatch, Predicciones, PredMatchup } from "@/lib/typesLive";
 
 const POSC: Record<string, string> = { GKP: "#FFD166", DEF: "#04F5FF", MID: "#00FF87", FWD: "#FF2D78" };
@@ -100,6 +101,14 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
   const draftDate = d.league.draft_local.split(" ")[0]; // "17-ago-2026"
   const draftTime = d.league.draft_local.split(" ").slice(1).join(" "); // "20:45 ECT"
   const nEmb = d.embargo.players.length;
+  // Pre-GW1 la tabla viene en ceros y el "lider" seria un artefacto del orden: solo hay
+  // lider cuando ya se jugo algo.
+  const lider = useMemo(() => {
+    if (d.standings.reduce((a, s) => a + s.played, 0) === 0) return null;
+    const s = d.standings[0];
+    const t = teamIdx.get(s.lentry);
+    return t ? { pts: s.pts, name: t.t.name, emblem: t.t.emblem } : null;
+  }, [d.standings, teamIdx]);
 
   const tf = (l: number) => teamIdx.get(l);
 
@@ -115,6 +124,7 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
           <Crest text="VIII" />
           <div>Fantasy Premier League VIII<small>Temporada 2026-27 · Liga Draft H2H</small></div>
         </div>
+        <Link className="navlink" href="/temporada">La temporada &rarr;</Link>
         <Link className="navlink" href="/ligas-pasadas">Ligas pasadas &rarr;</Link>
       </div></nav>
 
@@ -124,12 +134,24 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
           {d.league.name.replace(" VIII", "")} <span className="g">VIII</span>
         </h1>
         <p className="sub reveal" style={{ animationDelay: ".1s" }}>
-          La octava edición ya rueda: draft celebrado el {draftDate} ({draftTime}), {d.league.teams} equipos y la Jornada {d.gw.event} en juego.
+          {d.gw.finished
+            ? <>La Jornada {d.gw.event} ya cerró. {lider ? <><b style={{ color: "var(--mint)" }}>{lider.name}</b> manda la tabla</> : "Arrancó la tabla"}
+                {d.gw.next ? <> y la Jornada {d.gw.next.event} ya asoma.</> : "."}</>
+            : <>La octava edición ya rueda: draft celebrado el {draftDate} ({draftTime}), {d.league.teams} equipos y la Jornada {d.gw.event} en juego.</>}
         </p>
         <div className="stats live4 reveal" style={{ animationDelay: ".16s" }}>
           <div className="stat"><div className="k">{d.league.teams}</div><div className="l">Equipos</div></div>
-          <div className="stat"><div className="k acc" style={{ fontSize: "clamp(18px,2.8vw,26px)" }}>{draftDate.replace(/-/g, " ")}</div><div className="l">Draft</div></div>
-          <div className="stat"><div className="k" style={{ fontSize: "clamp(18px,2.8vw,26px)" }}>Jornada {d.gw.event}</div><div className="l">En juego</div></div>
+          <div className="stat">
+            <div className="k" style={{ fontSize: "clamp(18px,2.8vw,26px)" }}>Jornada {d.gw.event}</div>
+            <div className="l">{d.gw.finished ? "Finalizada" : "En juego"}</div>
+          </div>
+          <div className="stat champ">
+            {lider && <img className="champ-emblem" src={`/${lider.emblem}`} alt={lider.name} />}
+            <div>
+              <div className="k acc" style={{ fontSize: "clamp(15px,2.4vw,21px)" }}>{lider ? lider.name : "—"}</div>
+              <div className="l">Líder · {lider ? `${lider.pts} pts` : "sin jugar"}</div>
+            </div>
+          </div>
           <div className="stat"><div className="k acc">{nEmb}</div><div className="l">Jugadores en embargo &rarr; GW{d.embargo.unlock_gw}</div></div>
         </div>
       </div></header>
@@ -138,7 +160,11 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
         {/* ---- Jornada 1 ---- */}
         <section className="block">
           <h2 className="h2">Jornada <span className="g">{d.gw.event}</span></h2>
-          <p className="kicker">Los cinco cruces cabeza a cabeza de la semana.</p>
+          <p className="kicker">
+            {d.gw.finished
+              ? "Resultados finales de los cinco cruces cabeza a cabeza."
+              : "Los cinco cruces cabeza a cabeza de la semana."}
+          </p>
           <div className="vsgrid">
             {d.gw.matches.map((m: GwMatch, k: number) => {
               const A = tf(m.a); const B = tf(m.b);
@@ -149,7 +175,12 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
                   <TeamSide t={A.t} i={A.i} />
                   <div className="vsmid">
                     {m.started
-                      ? <><span className="sc">{m.pa}</span> &ndash; <span className="sc">{m.pb}</span><small>{m.finished ? "final" : "en vivo"}</small></>
+                      ? <>
+                          <span className="sc" style={m.finished && m.pa > m.pb ? { color: "var(--mint)" } : undefined}>{m.pa}</span>
+                          {" "}&ndash;{" "}
+                          <span className="sc" style={m.finished && m.pb > m.pa ? { color: "var(--mint)" } : undefined}>{m.pb}</span>
+                          <small>{m.finished ? "final" : "en vivo"}</small>
+                        </>
                       : <>vs<small>por jugarse</small></>}
                   </div>
                   <TeamSide t={B.t} i={B.i} right />
@@ -161,10 +192,43 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
           {predGw && (
             <p className="footnote">
               Predicciones al deadline · XI óptimo teórico por modelo sobre cada roster · fuentes
-              enmascaradas (ENS = ensamble de la casa) · P(gana) = modelo Φ(Δμ/16).
+              enmascaradas (ENS = ensamble de la casa) · P(gana) = modelo Φ(Δμ/16).{" "}
+              {d.gw.finished && (
+                <Link href="/temporada" style={{ color: "var(--mint)" }}>
+                  ¿Cuánto acertaron? &rarr;
+                </Link>
+              )}
             </p>
           )}
         </section>
+
+        {/* ---- Lo que viene: reloj de fases + cruces de la proxima jornada ---- */}
+        {d.gw.next && (
+          <section className="block">
+            <h2 className="h2">Lo que <span className="g">viene</span></h2>
+            <p className="kicker">
+              Jornada {d.gw.next.event} · las fechas que mandan esta semana: trades, waivers y deadline.
+            </p>
+            <GameClock g={d.game} />
+            <div className="vsgrid" style={{ marginTop: 18 }}>
+              {d.gw.next.matches.map((m: GwMatch, k: number) => {
+                const A = tf(m.a); const B = tf(m.b);
+                if (!A || !B) return null;
+                return (
+                  <div className="vscard reveal" key={k} style={{ animationDelay: `${k * 0.04}s` }}>
+                    <TeamSide t={A.t} i={A.i} />
+                    <div className="vsmid">vs<small>por jugarse</small></div>
+                    <TeamSide t={B.t} i={B.i} right />
+                  </div>
+                );
+              })}
+            </div>
+            <p className="footnote">
+              Las predicciones de la Jornada {d.gw.next.event} se publican después del deadline,
+              nunca antes: mientras el mercado esté abierto, el pronóstico es información de juego.
+            </p>
+          </section>
+        )}
 
         {/* ---- La Tabla ---- */}
         <section className="block">

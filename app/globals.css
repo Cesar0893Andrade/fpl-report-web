@@ -334,6 +334,20 @@ table.embt{min-width:560px}
 .clubtag{font-family:var(--h);font-weight:700;font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:3px 8px}
 .footnote{color:var(--muted);font-size:12px;margin-top:12px}
 
+/* reloj de fases del juego (trades -> waivers -> deadline) */
+.gcstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gcitem{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;backdrop-filter:blur(6px);transition:.25s}
+.gcitem .gct{font-family:var(--h);font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gcitem .gcw{font-family:var(--h);font-weight:800;font-size:15px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.gcitem .gcn{color:var(--muted);font-size:11.5px;margin-top:8px;line-height:1.45}
+.gcflag{font-family:var(--h);font-weight:800;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 8px}
+.gcflag.next{color:var(--purple);background:linear-gradient(90deg,var(--green),var(--mint));border-color:transparent}
+.gcitem.done{opacity:.42}
+.gcitem.done .gcw{text-decoration:line-through}
+.gcitem.now{border-color:rgba(102,255,182,.42);background:rgba(102,255,182,.06)}
+.gcitem.now .gcw{color:var(--mint)}
+@media(max-width:720px){.gcstrip{grid-template-columns:1fr}}
+
 /* draft */
 .r1strip{display:flex;gap:10px;overflow-x:auto;padding:4px 0 12px}
 .pickcard{flex:none;width:152px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
@@ -367,3 +381,37 @@ table.embt{min-width:560px}
 .predcov{font-size:10.5px;color:var(--muted);margin-top:4px;text-align:right}
 @media(max-width:420px){.predrow{grid-template-columns:40px 34px 1fr 34px minmax(66px,auto);gap:6px}.predrow .pmu{font-size:11px}.predfav{font-size:10px}}
 @media (prefers-reduced-motion:reduce){.predbar b{transition:none}}
+
+/* ---- Acierto del modelo (/temporada, pestana Modelo) ---- */
+.chart.sm{height:380px}
+.modnote{padding:18px 22px;margin-top:16px;color:var(--muted);font-size:13.5px;line-height:1.6}
+.modnote b{color:var(--ink)}
+.modnote em{color:var(--mint);font-style:normal;font-weight:600}
+table.modt{min-width:620px}
+table.modt td.l{display:table-cell}
+.mdot{display:inline-block;width:9px;height:9px;border-radius:99px;margin-right:9px;vertical-align:middle}
+table.modt tr.ensrow{background:rgba(102,255,182,.06)}
+table.modt tr.ensrow td{border-color:rgba(102,255,182,.18)}
+table.modt tr.naiverow{color:var(--muted)}
+table.modt tr.naiverow b{font-weight:600}
+
+.modgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.modcard{padding:16px 18px}
+.modhead{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.modhead .ms{display:flex;align-items:center;gap:9px;min-width:0}
+.modhead .ms.r{flex-direction:row-reverse}
+.modhead .mn{font-family:var(--h);font-weight:700;font-size:13px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modhead .msc{font-family:var(--h);font-weight:800;font-size:19px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.modhead .msc span{color:var(--muted);font-size:14px;margin:0 2px}
+.modrows{padding-top:8px}
+.modrow{display:grid;grid-template-columns:78px 40px 40px 1fr auto;align-items:center;gap:8px;padding:4px 0;color:var(--muted)}
+.modrow .mchip{font-family:var(--h);font-weight:800;font-size:9.5px;letter-spacing:.04em;text-align:center;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:99px;padding:3px 0}
+.modrow .pmu{font-family:var(--h);font-weight:600;font-size:12px;font-variant-numeric:tabular-nums;text-align:right}
+.modrow .pmu.r{text-align:left}
+.modrow .mfav{font-family:var(--h);font-weight:700;font-size:11px;text-align:right;white-space:nowrap}
+.modrow .mhit{font-family:var(--h);font-weight:800;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;border-radius:99px;padding:3px 9px;white-space:nowrap}
+.modrow .mhit.ok{color:var(--purple);background:linear-gradient(90deg,var(--green),var(--mint))}
+.modrow .mhit.no{color:#FF7DA6;border:1px solid rgba(255,125,166,.35)}
+@media(max-width:860px){.modgrid{grid-template-columns:1fr}}
+@media(max-width:420px){.modrow{grid-template-columns:66px 36px 36px 1fr auto;gap:6px}.modrow .mfav{font-size:10px}}
+.mtag{font-family:var(--h);font-weight:700;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 8px;margin-left:8px;vertical-align:middle}

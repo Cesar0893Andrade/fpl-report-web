@@ -27,9 +27,12 @@ function buildOption(d: League) {
   };
 }
 
-export default function Resumen({ d }: { d: League }) {
+export default function Resumen({ d, live = false }: { d: League; live?: boolean }) {
   const chartRef = useRef<HTMLDivElement>(null);
+  // Con una sola jornada el grafico de progreso es un punto suelto: no se monta.
+  const showProg = d.progression.events.length > 1;
   useEffect(() => {
+    if (!showProg) return;
     let chart: { resize: () => void; dispose: () => void } | null = null;
     let disposed = false;
     import("echarts").then((echarts) => {
@@ -40,7 +43,7 @@ export default function Resumen({ d }: { d: League }) {
     const onResize = () => chart?.resize();
     window.addEventListener("resize", onResize);
     return () => { disposed = true; window.removeEventListener("resize", onResize); chart?.dispose(); };
-  }, [d]);
+  }, [d, showProg]);
 
   const effs = d.standings.map((s) => s.eff);
   const emin = Math.min(...effs), emax = Math.max(...effs);
@@ -49,7 +52,11 @@ export default function Resumen({ d }: { d: League }) {
     <>
       <section className="block">
         <h2 className="h2">La <span className="g">Tabla</span></h2>
-        <p className="kicker">Clasificación final · cabeza a cabeza (3 / 1 / 0)</p>
+        <p className="kicker">
+          {live
+            ? `Clasificación tras ${d.league.last_event} ${d.league.last_event === 1 ? "jornada" : "jornadas"} · cabeza a cabeza (3 / 1 / 0)`
+            : "Clasificación final · cabeza a cabeza (3 / 1 / 0)"}
+        </p>
         <div className="panel reveal"><div className="tablewrap"><table>
           <thead><tr>
             <th>#</th><th className="l">Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>PF</th><th>PC</th><th>Pts</th><th>Pos/GW</th><th>Efic. XI</th>
@@ -81,12 +88,22 @@ export default function Resumen({ d }: { d: League }) {
         </table></div></div>
       </section>
 
-      <section className="block">
-        <h2 className="h2">Progreso de la <span className="g">Tabla</span></h2>
-        <p className="kicker">Posición por jornada · pasa el cursor para el detalle · toca la leyenda para aislar un equipo</p>
-        <div className="panel reveal" style={{ padding: 18 }}><div className="chart" ref={chartRef} /></div>
-        <p className="legendnote">Eje invertido: arriba = 1.º. Datos reconstruidos y validados al 100% contra el API oficial.</p>
-      </section>
+      {showProg ? (
+        <section className="block">
+          <h2 className="h2">Progreso de la <span className="g">Tabla</span></h2>
+          <p className="kicker">Posición por jornada · pasa el cursor para el detalle · toca la leyenda para aislar un equipo</p>
+          <div className="panel reveal" style={{ padding: 18 }}><div className="chart" ref={chartRef} /></div>
+          <p className="legendnote">Eje invertido: arriba = 1.º. Datos reconstruidos y validados al 100% contra el API oficial.</p>
+        </section>
+      ) : (
+        <section className="block">
+          <h2 className="h2">Progreso de la <span className="g">Tabla</span></h2>
+          <p className="kicker">
+            La curva de posiciones aparece a partir de la segunda jornada: con una sola fecha
+            todavía no hay recorrido que dibujar.
+          </p>
+        </section>
+      )}
     </>
   );
 }

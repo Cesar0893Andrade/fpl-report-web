@@ -17,6 +17,9 @@ export default function Versus({ d }: { d: League }) {
   const [sview, setSview] = useState<SView>("global");
   const { ids, rec } = d.versus;
   const E = d.performance.events.length;
+  // Rivalidades y suerte de calendario necesitan que los cruces se repitan; antes de eso
+  // son ruido con forma de analisis.
+  const maduro = E >= 4;
 
   const info: Record<number, { name: string; short: string; emblem: string | null; idx: number }> = {};
   d.standings.forEach((s) => { info[s.id] = { name: s.name, short: s.short, emblem: s.emblem, idx: 0 }; });
@@ -122,6 +125,18 @@ export default function Versus({ d }: { d: League }) {
         </table></div></div>
       </section>
 
+      {!maduro ? (
+        <section className="block">
+          <h2 className="h2"><span className="g">Rivalidades</span> y suerte de <span className="g">calendario</span></h2>
+          <p className="kicker" style={{ maxWidth: 720 }}>
+            Aún no. Con {E} {E === 1 ? "jornada jugada" : "jornadas jugadas"} cada pareja se ha
+            cruzado una sola vez: no hay parejas «cerradas» ni «dominadas» que distinguir, y la
+            suerte de calendario daría cero para todos por construcción, no porque el fixture haya
+            sido justo. Estas dos lecturas aparecen cuando la liga tenga recorrido.
+          </p>
+        </section>
+      ) : (
+      <>
       <section className="block">
         <h2 className="h2"><span className="g">Rivalidades</span> <small style={{ fontSize: 13, color: "var(--muted)", fontWeight: 600 }}>(según {mode === "real" ? "lo real" : "las 38 GW"})</small></h2>
         <p className="kicker">Las parejas más cerradas y las más dominadas, con el otro registro ({othLbl}) al lado · sigue el selector de arriba</p>
@@ -173,6 +188,8 @@ export default function Versus({ d }: { d: League }) {
           </div>
         )}
       </section>
+      </>
+      )}
     </>
   );
 }

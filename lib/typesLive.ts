@@ -13,7 +13,15 @@ export interface StandingLive {
   lost: number; pf: number; pa: number; pts: number;
 }
 export interface GwMatch { a: number; b: number; pa: number; pb: number; started: boolean; finished: boolean }
-export interface GwLive { event: number; matches: GwMatch[] }
+export interface GwNext { event: number; deadline_utc: string | null; matches: GwMatch[] }
+export interface GwLive { event: number; finished: boolean; matches: GwMatch[]; next: GwNext | null }
+// Estado del juego: hitos crudos del API. La fase la deriva el cliente contra su reloj,
+// porque el JSON es estatico y cualquier fase escrita aqui nace envejeciendo.
+export interface GameLive {
+  current_event: number; current_event_finished: boolean; next_event: number | null;
+  waivers_processed: boolean; trades_time_for_approval: boolean;
+  next_trades_utc: string | null; next_waivers_utc: string | null; next_deadline_utc: string | null;
+}
 export interface DraftPick {
   pick: number; round: number; lentry: number; el: number;
   name: string; pos: string; club: string; auto: boolean;
@@ -30,7 +38,7 @@ export interface EmbargoLive {
 export interface LeagueLive {
   schema: string; generated_at: string; season: string;
   league: LeagueInfoLive; teams: TeamLive[]; standings: StandingLive[];
-  gw: GwLive; draft: DraftLive; embargo: EmbargoLive;
+  game: GameLive; gw: GwLive; draft: DraftLive; embargo: EmbargoLive;
 }
 
 // Types for data/predicciones-747.json (schema predicciones-gw.v1)
