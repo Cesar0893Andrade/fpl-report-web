@@ -165,6 +165,7 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
               ? "Resultados finales de los cinco cruces cabeza a cabeza."
               : "Los cinco cruces cabeza a cabeza de la semana."}
           </p>
+          {!d.gw.next && !d.gw.matches.some((m: GwMatch) => m.started) && <GameClock g={d.game} />}
           <div className="vsgrid">
             {d.gw.matches.map((m: GwMatch, k: number) => {
               const A = tf(m.a); const B = tf(m.b);
@@ -191,8 +192,9 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
           </div>
           {predGw && (
             <p className="footnote">
-              Predicciones al deadline · XI óptimo teórico por modelo sobre cada roster · fuentes
-              enmascaradas (ENS = ensamble de la casa) · P(gana) = modelo Φ(Δμ/16).{" "}
+              XI óptimo teórico por modelo sobre cada roster · fuentes enmascaradas
+              (ENS = ensamble de la casa) · P(gana) = modelo Φ(Δμ/16). Es el techo de cada
+              plantilla, no la alineación que cada quien mandó.{" "}
               {d.gw.finished && (
                 <Link href="/temporada" style={{ color: "var(--mint)" }}>
                   ¿Cuánto acertaron? &rarr;
