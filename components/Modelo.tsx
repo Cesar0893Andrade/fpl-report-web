@@ -125,8 +125,10 @@ export default function Modelo({ d }: { d: LigaAnalitica }) {
         </div>
 
         <div className="panel modnote">
-          <b>Cómo leer esto.</b> El pronóstico clavó el <em>nivel</em> de la liga y falló el{" "}
-          <em>ganador</em> de casi todos los cruces, y las dos cosas son ciertas a la vez. En{" "}
+          <b>Cómo leer esto.</b> El pronóstico clavó el <em>nivel</em> de la liga y acertó el{" "}
+          <em>ganador</em> en {ens.h2h} de {ens.n_h2h} cruces
+          {ens.h2h / ens.n_h2h >= 0.65 ? " — bastante para una semana de H2H" : ens.h2h / ens.n_h2h >= 0.5 ? " — poco más que una moneda" : " — menos que una moneda"}, y
+          las dos cosas son ciertas a la vez. En{" "}
           {nGw === 1 ? "la jornada medida" : `las ${nGw} jornadas medidas`} el margen real promedió{" "}
           <b>{m.margen_medio_real.toFixed(1)} puntos</b>, contra una incertidumbre semanal de{" "}
           <b>±{m.sigma.toFixed(0)}</b>: los partidos se deciden dentro del margen de error. Por eso
