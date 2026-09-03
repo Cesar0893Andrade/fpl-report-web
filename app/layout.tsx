@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Fantasy Premier League VIII - Liga 26/27",
-  description: "Liga draft H2H 2026-27 — jornada en vivo, tabla, el draft completo y los jugadores en embargo hasta la GW3.",
+  description: "Liga draft H2H 2026-27 — jornada en vivo, tabla, el draft completo y los jugadores en embargo hasta la GW4.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
