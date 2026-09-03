@@ -278,9 +278,9 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
           <h2 className="h2">El <span className="g">Embargo</span></h2>
           <p className="kicker" style={{ maxWidth: 720 }}>
             Jugadores registrados en FPL después del draft de la liga ({draftDate}, {draftTime}). No pueden ser
-            fichados por ningún equipo hasta su habilitación, que es la corrida de waivers de la GW{d.embargo.unlock_gw}{" "}
-            (48 horas después del cierre del mercado de la Premier League): los claims sobre embargados
-            se cargan desde el cierre de la GW2 y se resuelven todos juntos, por orden de prioridad, en ese &laquo;súper waiver&raquo;.
+            fichados por ningún equipo hasta su habilitación: la corrida de waivers de la GW{d.embargo.unlock_gw}{" "}
+            (jue 11-sep, 07:30 Ecuador). Los claims sobre embargados se cargan desde el deadline de la GW3
+            (vie 4-sep) y se resuelven todos juntos, por orden de prioridad, en ese &laquo;súper waiver&raquo;.
           </p>
           <div className="cdpanel reveal">
             <div>
