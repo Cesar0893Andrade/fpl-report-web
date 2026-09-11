@@ -415,3 +415,9 @@ table.modt tr.naiverow b{font-weight:600}
 @media(max-width:860px){.modgrid{grid-template-columns:1fr}}
 @media(max-width:420px){.modrow{grid-template-columns:66px 36px 36px 1fr auto;gap:6px}.modrow .mfav{font-size:10px}}
 .mtag{font-family:var(--h);font-weight:700;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+
+/* embargo: verano levantado + invierno */
+.embh3{font-family:Poppins,sans-serif;font-size:clamp(17px,2.2vw,21px);font-weight:700;margin:30px 0 6px}
+.embdest{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.embfree{font-size:13px;line-height:1.55;color:var(--muted);margin:12px 0 0;max-width:900px}
+.embfree b{font-weight:600}

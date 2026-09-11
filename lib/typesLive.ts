@@ -30,10 +30,16 @@ export interface DraftLive { rounds: number; picks: DraftPick[] }
 export interface EmbargoPlayer {
   el: number; code: number; name: string; web: string;
   club: string; pos: string; added_utc: string;
+  owner?: number | null; via?: "waiver" | "fa" | null; via_event?: number | null;
+}
+export interface EmbargoNext {
+  name: string; start_utc: string; start_local: string; start_uk: string; end: string;
+  players: EmbargoPlayer[];
 }
 export interface EmbargoLive {
   unlock_gw: number; unlock_utc: string; unlock_local: string;
   market_close_utc: string; baseline_elements: number; players: EmbargoPlayer[];
+  next?: EmbargoNext;
 }
 export interface LeagueLive {
   schema: string; generated_at: string; season: string;

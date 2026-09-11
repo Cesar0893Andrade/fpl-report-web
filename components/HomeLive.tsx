@@ -101,6 +101,16 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
   const draftDate = d.league.draft_local.split(" ")[0]; // "17-ago-2026"
   const draftTime = d.league.draft_local.split(" ").slice(1).join(" "); // "20:45 ECT"
   const nEmb = d.embargo.players.length;
+  // El verano se da por cerrado segun la fecha de generacion (estatico: sin salto de hidratacion).
+  const summerDone = d.generated_at >= d.embargo.unlock_utc;
+  const nOwned = d.embargo.players.filter((p) => p.owner != null).length;
+  const nx = d.embargo.next;
+  const winterMs = nx ? new Date(nx.start_utc).getTime() : null;
+  const wRem = now === null || winterMs === null ? null : winterMs - now;
+  const wActive = wRem !== null && wRem <= 0;
+  const wcd = wRem !== null && wRem > 0
+    ? { dd: Math.floor(wRem / 86400000), hh: Math.floor((wRem % 86400000) / 3600000), mm: Math.floor((wRem % 3600000) / 60000) }
+    : null;
   // Pre-GW1 la tabla viene en ceros y el "lider" seria un artefacto del orden: solo hay
   // lider cuando ya se jugo algo.
   const lider = useMemo(() => {
@@ -152,7 +162,9 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
               <div className="l">Líder · {lider ? `${lider.pts} pts` : "sin jugar"}</div>
             </div>
           </div>
-          <div className="stat"><div className="k acc">{nEmb}</div><div className="l">Jugadores en embargo &rarr; GW{d.embargo.unlock_gw}</div></div>
+          {summerDone && nx
+            ? <div className="stat"><div className="k acc" style={{ fontSize: "clamp(15px,2.4vw,21px)" }}>{nx.start_local.split(" ")[0]}</div><div className="l">Próximo embargo · invierno</div></div>
+            : <div className="stat"><div className="k acc">{nEmb}</div><div className="l">Jugadores en embargo &rarr; GW{d.embargo.unlock_gw}</div></div>}
         </div>
       </div></header>
 
@@ -276,49 +288,90 @@ export default function HomeLive({ d, pred }: { d: LeagueLive; pred: Prediccione
         {/* ---- Embargo ---- */}
         <section className="block">
           <h2 className="h2">El <span className="g">Embargo</span></h2>
-          <p className="kicker" style={{ maxWidth: 720 }}>
-            Jugadores registrados en FPL después del draft de la liga ({draftDate}, {draftTime}). No pueden ser
-            fichados por ningún equipo hasta su habilitación: la corrida de waivers de la GW{d.embargo.unlock_gw}{" "}
-            (jue 11-sep, 07:30 Ecuador). Los claims sobre embargados se cargan desde el deadline de la GW3
-            (vie 4-sep) y se resuelven todos juntos, por orden de prioridad, en ese &laquo;súper waiver&raquo;.
-          </p>
-          <div className="cdpanel reveal">
-            <div>
-              <div className="cdlabel">{unlocked ? "Embargo levantado" : "Se habilitan en"}</div>
-              <div className="cdmeta">{d.embargo.unlock_local} · GW{d.embargo.unlock_gw}</div>
-            </div>
-            {unlocked
-              ? <div className="cddone">Habilitados desde el {unlockDate}</div>
-              : (
-                <div className="cdunits">
-                  <div className="cdu"><b>{cd ? cd.dd : "--"}</b><span>días</span></div>
-                  <div className="cdu"><b>{cd ? String(cd.hh).padStart(2, "0") : "--"}</b><span>horas</span></div>
-                  <div className="cdu"><b>{cd ? String(cd.mm).padStart(2, "0") : "--"}</b><span>min</span></div>
+          {nx && (
+            <>
+              <p className="kicker" style={{ maxWidth: 760 }}>
+                <b>Próximo: {nx.name.toLowerCase()}.</b> Todo jugador que se dé de alta en el sistema del draft
+                desde el <b>{nx.start_uk}</b> &mdash; <b>{nx.start_local}</b> &mdash; y hasta el {nx.end} queda
+                embargado: ningún equipo lo puede fichar hasta su habilitación, que se anunciará al cierre del mercado.
+              </p>
+              <div className="cdpanel reveal">
+                <div>
+                  <div className="cdlabel">{wActive ? "Embargo de invierno activo" : "Empieza en"}</div>
+                  <div className="cdmeta">{nx.start_local} · {nx.start_uk}</div>
+                </div>
+                {wActive
+                  ? <div className="cddone">{nx.players.length} embargados</div>
+                  : (
+                    <div className="cdunits">
+                      <div className="cdu"><b>{wcd ? wcd.dd : "--"}</b><span>días</span></div>
+                      <div className="cdu"><b>{wcd ? String(wcd.hh).padStart(2, "0") : "--"}</b><span>horas</span></div>
+                      <div className="cdu"><b>{wcd ? String(wcd.mm).padStart(2, "0") : "--"}</b><span>min</span></div>
+                    </div>
+                  )}
+              </div>
+              {nx.players.length > 0 && (
+                <div className="panel">
+                  <div className="tablewrap">
+                    <table className="embt">
+                      <thead>
+                        <tr><th className="l">Jugador</th><th style={{ textAlign: "center" }}>Club</th><th style={{ textAlign: "center" }}>Pos</th><th>Agregado</th></tr>
+                      </thead>
+                      <tbody>
+                        {nx.players.map((p: EmbargoPlayer) => (
+                          <tr key={p.el}>
+                            <td className="l embname"><b>{p.web}</b><span className="full">{p.name}</span></td>
+                            <td style={{ textAlign: "center" }}><span className="clubtag">{p.club}</span></td>
+                            <td style={{ textAlign: "center" }}><PosChip pos={p.pos} /></td>
+                            <td>{fmtAdded(p.added_utc)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
-          </div>
+            </>
+          )}
+
+          <h3 className="embh3">Embargo de verano · <span className="g">{summerDone ? "levantado" : "vigente"}</span></h3>
+          <p className="kicker" style={{ maxWidth: 760 }}>
+            {nEmb} jugadores registrados en FPL después del draft ({draftDate}) quedaron bloqueados hasta la corrida
+            de waivers de la GW{d.embargo.unlock_gw} ({d.embargo.unlock_local}), donde se liberaron todos juntos.
+            {summerDone && <> {nOwned} ya tienen dueño; el resto sigue libre.</>}
+          </p>
           <div className="panel">
             <div className="tablewrap">
               <table className="embt">
                 <thead>
-                  <tr><th className="l">Jugador</th><th style={{ textAlign: "center" }}>Club</th><th style={{ textAlign: "center" }}>Pos</th><th>Agregado</th></tr>
+                  <tr><th className="l">Jugador</th><th style={{ textAlign: "center" }}>Club</th><th style={{ textAlign: "center" }}>Pos</th><th className="l">Destino</th><th>Vía</th></tr>
                 </thead>
                 <tbody>
-                  {d.embargo.players.map((p: EmbargoPlayer) => (
-                    <tr key={p.el}>
-                      <td className="l embname"><b>{p.web}</b><span className="full">{p.name}</span></td>
-                      <td style={{ textAlign: "center" }}><span className="clubtag">{p.club}</span></td>
-                      <td style={{ textAlign: "center" }}><PosChip pos={p.pos} /></td>
-                      <td>{fmtAdded(p.added_utc)}</td>
-                    </tr>
-                  ))}
+                  {d.embargo.players.filter((p) => p.owner != null).map((p: EmbargoPlayer) => {
+                    const o = tf(p.owner as number);
+                    return (
+                      <tr key={p.el}>
+                        <td className="l embname"><b>{p.web}</b><span className="full">{p.name}</span></td>
+                        <td style={{ textAlign: "center" }}><span className="clubtag">{p.club}</span></td>
+                        <td style={{ textAlign: "center" }}><PosChip pos={p.pos} /></td>
+                        <td className="l">{o ? <span className="embdest"><Badge emblem={o.t.emblem} short={o.t.short} i={o.i} /> {o.t.name}</span> : "—"}</td>
+                        <td>{p.via === "waiver" ? "Súper waiver" : p.via === "fa" ? "Free agency" : "—"}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           </div>
+          {nEmb - nOwned > 0 && (
+            <p className="embfree">
+              <b>Siguen libres ({nEmb - nOwned}):</b>{" "}
+              {d.embargo.players.filter((p) => p.owner == null).map((p) => p.web).join(", ")}.
+            </p>
+          )}
           <p className="footnote">
-            La lista se recalcula automáticamente con cada actualización del sitio: los fichajes de última hora
-            del mercado entran solos al embargo.
+            En enero el Reino Unido está en hora GMT (UTC+0) y Ecuador en UTC&minus;5: la medianoche del 1-ene en
+            Londres son las 19:00 del 31-dic en Ecuador. La lista de invierno se llena sola con cada actualización del sitio.
           </p>
         </section>
 
